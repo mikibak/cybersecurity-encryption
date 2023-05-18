@@ -1,0 +1,9 @@
+Środowisko graficzme - .NET windows forms
+
+Gałęzie:
+UI - App.xaml.cs czy coś takiego
+block-encryption - klasa block_encryption, metoda do szyfrowania i deszyfrowania
+                    plus interfejs Encoding jak chcemy być ambitni
+ECB - szyfrowanie, deszyfrowanie, ECB.cs
+CBC - szyfrowanie, deszyfrowanie
+CTR - szyfrowanie, deszyfrowanie
