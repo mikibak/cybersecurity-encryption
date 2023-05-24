@@ -7,23 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="calculateNewtonSymbolTasksTextBox" Margin="321,194,267,176"></TextBox>
-        <TextBox x:Name="calculateNewtonSymbolDelegatesTextBox" Margin="62,194,526,176"></TextBox>
-        <TextBox x:Name="calculateNewtonSymbolAsyncAwaitTextBox" Margin="554,194,34,176"></TextBox>
-        <TextBox x:Name="calculateFibonacciTextBox" Margin="62,336,526,34"></TextBox>
-        <Label Margin="222,74,504,300">K</Label>
-        <Label Margin="222,10,504,365">N</Label>
-        <TextBox x:Name="nBox" Margin="321,74,321,300" TextChanged="kChangedEventHandler">3</TextBox>
-        <TextBox x:Name="kBox" Margin="321,10,321,365" TextChanged="nChangedEventHandler">5</TextBox>
-        <TextBox x:Name="statusBox" Margin="540,10,102,385">Status</TextBox>
-        <Button x:Name="calculateNewtonSymbolTasksButton" Click="CalculateNewtonSymbolTasks" Margin="321,139,267,245">Calculate newton symbol using Tasks</Button>
-        <Button x:Name="calculateNewtonSymbolDelegatesButton" Click="CalculateNewtonSymbolDelegates" Margin="62,139,526,245">Calculate newton symbol asynchronously using Delegates</Button>
-        <Button x:Name="calculateNewtonSymbolAsyncAwaitButton" Click="CalculateNewtonSymbolAsyncAwait" Margin="554,139,34,245">Calculate newton symbol using async and await</Button>
-        <Button x:Name="calculateFibonacciButton" Click="CalculateFibonacci" Margin="62,281,526,103">Calculate nth fib</Button>
-        <Button x:Name="compressButton" Click="CompressFolder" Margin="321,281,373,103">Compress Folder</Button>
-        <Button x:Name="decompressButton" Click="DecompressFolder" Margin="432,281,267,103">Decompress Folder</Button>
-        <ProgressBar x:Name="progressBar" Margin="62,368,526,34"/>
-        <Button x:Name="resolveDNS" Click="ResolveDNS" Margin="554,281,34,103">Resolve DNS</Button>
-        <TextBox x:Name="resolveDNSTextBox" Margin="554,336,34,34"/>
+        <Label Margin="62,40,694,365" Content="KEY"/>
+        <TextBox x:Name="keyBox" Margin="106,40,526,365" TextChanged="KeyChangedEventHandler">5</TextBox>
+        <TextBox x:Name="statusBox" Margin="62,367,526,43">Status</TextBox>
+        
+        <Button x:Name="ECB" Click="EncryptECB" Margin="62,116,649,267" Content="ECB"/>
+        <ProgressBar x:Name="ECBprogressBar" Margin="168,116,431,292"/>
+        <TextBox x:Name="ECBTextBox" Margin="168,142,431,266"></TextBox>
+
+        <Button x:Name="CBC" Click="EncryptCBC" Margin="62,187,649,197" Content="CBC"/>
+        <ProgressBar x:Name="CBCprogressBar" Margin="168,187,431,221"/>
+        <TextBox x:Name="CBCTextBox" Margin="168,211,431,197"/>
+
+        <Button x:Name="CTR" Click="EncryptCTR" Margin="62,251,649,129" Content="CTR"/>
+        <ProgressBar x:Name="CTRprogressBar" Margin="168,251,431,160"/>
+        <TextBox x:Name="CTRTextBox" Margin="168,279,431,129"/>
     </Grid>
 </Window>
