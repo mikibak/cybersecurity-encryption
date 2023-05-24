@@ -10,7 +10,13 @@
         <Label Margin="62,40,694,365" Content="KEY"/>
         <TextBox x:Name="keyBox" Margin="106,40,526,365" TextChanged="KeyChangedEventHandler">5</TextBox>
         <TextBox x:Name="statusBox" Margin="62,367,526,43">Status</TextBox>
-        
+        <Image Name="Image" Margin="419,4,0,2">
+            <Image.Source>
+                <BitmapImage DecodePixelWidth="200"  
+                    UriSource="Resources/default.bmp" />
+            </Image.Source>
+        </Image>
+
         <Button x:Name="ECB" Click="EncryptECB" Margin="62,116,649,267" Content="ECB"/>
         <ProgressBar x:Name="ECBprogressBar" Margin="168,116,431,292"/>
         <TextBox x:Name="ECBTextBox" Margin="168,142,431,266"></TextBox>

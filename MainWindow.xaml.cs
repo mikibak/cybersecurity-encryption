@@ -20,18 +20,20 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.Intrinsics.X86;
 using System.Net;
+using cybersecurity_encryption.Model;
 //using System.Windows.Forms;
 
 namespace cybersecurity_encryption
 {
     public partial class MainWindow : Window
     {
-        public double N { get; set; }
+        public double Key { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            N = 5;
+            //SetImage("C:\\Users\\mikolaj\\cybersecurity-encryption\\Resources\\default.bmp");
+            Key = 5;
         }
 
         private void KeyChangedEventHandler(object sender, TextChangedEventArgs args)
@@ -40,12 +42,36 @@ namespace cybersecurity_encryption
             double i;
             if(double.TryParse(t.Text, out i) && i >= 0 && i <= 9999)
             {
-                N = i;
+                Key = i;
             }
             else
             {
                 statusBox.Text = "Write correct number!";
             }
+        }
+
+        public void SetImage(string path)
+        {
+            Image = new Image();
+            Image.Width = 200;
+            // Create source
+            BitmapImage myBitmapImage = new BitmapImage();
+
+            // BitmapImage.UriSource must be in a BeginInit/EndInit block
+            myBitmapImage.BeginInit();
+            myBitmapImage.UriSource = new Uri(path);
+
+            // To save significant application memory, set the DecodePixelWidth or
+            // DecodePixelHeight of the BitmapImage value of the image source to the desired
+            // height or width of the rendered image. If you don't do this, the application will
+            // cache the image as though it were rendered as its normal size rather than just
+            // the size that is displayed.
+            // Note: In order to preserve aspect ratio, set DecodePixelWidth
+            // or DecodePixelHeight but not both.
+            myBitmapImage.DecodePixelWidth = 200;
+            myBitmapImage.EndInit();
+            //set image source
+            Image.Source = myBitmapImage;
         }
 
         public void EncryptECB(object sender, RoutedEventArgs e)
@@ -60,6 +86,7 @@ namespace cybersecurity_encryption
 
         public void EncryptCTR(object sender, RoutedEventArgs e)
         {
+            //This code actually calculates fibonacci sequence
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (object sender, DoWorkEventArgs args) =>
             {
@@ -69,11 +96,11 @@ namespace cybersecurity_encryption
                 double progress = 0;
                 double currentNumber = 1;
 
-                for (double i = 1; i < N; i++) {
+                for (double i = 1; i < Key; i++) {
                     previouspreviousNumber = previousNumber;
                     previousNumber = currentNumber;
                     currentNumber = previouspreviousNumber + previousNumber;
-                    progress = (i* 100) / N;
+                    progress = (i* 100) / Key;
                     bw.ReportProgress((int)progress);
                     Thread.Sleep(30);
                 }
