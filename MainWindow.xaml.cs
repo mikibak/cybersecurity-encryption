@@ -21,6 +21,12 @@ using System.Windows.Shapes;
 using System.Runtime.Intrinsics.X86;
 using System.Net;
 using cybersecurity_encryption.Model;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Interop;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Media.Media3D;
 //using System.Windows.Forms;
 
 namespace cybersecurity_encryption
@@ -28,6 +34,7 @@ namespace cybersecurity_encryption
     public partial class MainWindow : Window
     {
         public double Key { get; set; }
+        public byte[] byteArray { get; set; }
 
         public MainWindow()
         {
@@ -38,7 +45,7 @@ namespace cybersecurity_encryption
 
         private void KeyChangedEventHandler(object sender, TextChangedEventArgs args)
         {
-            TextBox t = (TextBox)sender;
+            System.Windows.Controls.TextBox t = (System.Windows.Controls.TextBox)sender;
             double i;
             if(double.TryParse(t.Text, out i) && i >= 0 && i <= 9999)
             {
@@ -50,14 +57,14 @@ namespace cybersecurity_encryption
             }
         }
 
+
         public void SetImage(string path)
         {
-            Image = new Image();
-            Image.Width = 200;
             // Create source
             BitmapImage myBitmapImage = new BitmapImage();
 
             // BitmapImage.UriSource must be in a BeginInit/EndInit block
+
             myBitmapImage.BeginInit();
             myBitmapImage.UriSource = new Uri(path);
 
@@ -71,8 +78,73 @@ namespace cybersecurity_encryption
             myBitmapImage.DecodePixelWidth = 200;
             myBitmapImage.EndInit();
             //set image source
-            Image.Source = myBitmapImage;
+            //Image.Source = myBitmapImage;
+
+            Bitmap bitmap1 = new Bitmap(path);
+            var arr = BitmapToArray(bitmap1.Width,bitmap1.Height, bitmap1);
+            byteArray = arr;//przypisujemy 
+            for (int i=0;i<arr.Length;i++)//for fun 
+            {
+                arr[i] = (byte)(255 -arr[i]);
+            }
+            Bitmap bmp = ArrayToBitmap(bitmap1.Width, bitmap1.Height, arr);
+            Image.Source = BitmapToBitmapImage(bmp);
+
         }
+        public byte[] BitmapToArray(int w, int h, Bitmap data)
+        {
+            byte[] dat = new byte[w * h * 4];
+            int iteratorr = 0;
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    //get pixel value
+                    System.Drawing.Color p = data.GetPixel(x, y);
+
+                    //extract ARGB value from p
+                    dat[iteratorr] = p.A;
+                    dat[iteratorr + 1] = p.R;
+                    dat[iteratorr + 2] = p.G;
+                    dat[iteratorr + 3] = p.B;
+                    iteratorr = iteratorr + 4;
+                }
+            }
+            return dat;
+        }
+        public Bitmap ArrayToBitmap(int w, int h, byte[] data)
+        {
+            Bitmap pic = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            int arrayIndex = 0;
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    System.Drawing.Color c = System.Drawing.Color.FromArgb(
+                       data[arrayIndex],
+                       data[arrayIndex +1],
+                       data[arrayIndex + 2],
+                       data[arrayIndex + 3]
+                    );
+                    arrayIndex = arrayIndex + 4;
+                    pic.SetPixel(x, y, c);
+                }
+            }
+            return pic;
+        }
+
+        public  BitmapImage BitmapToBitmapImage( Bitmap bitmap)
+        {
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            MemoryStream ms = new MemoryStream();
+            bitmap.Save(ms, ImageFormat.Bmp);
+            ms.Seek(0, SeekOrigin.Begin);
+            bi.StreamSource = ms;
+            bi.EndInit();
+            return bi;
+        }
+        
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
@@ -81,7 +153,8 @@ namespace cybersecurity_encryption
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
-
+            string path = Directory.GetCurrentDirectory();
+            CBCTextBox.Text = path;
         }
 
         public void EncryptCTR(object sender, RoutedEventArgs e)
@@ -113,7 +186,7 @@ namespace cybersecurity_encryption
             bw.RunWorkerCompleted += ((object sender, RunWorkerCompletedEventArgs args) =>
             {
                 CTRprogressBar.Value = 100;
-                MessageBox.Show("Result: " + args.Result);
+                System.Windows.MessageBox.Show("Result: " + args.Result);
                 CTRTextBox.Text = "CTR time: " + 2137;
                 CTRprogressBar.Value = 0;
             });
@@ -122,43 +195,59 @@ namespace cybersecurity_encryption
             bw.RunWorkerAsync(100);
         }
 
-        //this may or may not help with getting the image
-/*
-        public void CompressFolder(object sender, RoutedEventArgs e)
+        private void GetImage(object sender, RoutedEventArgs e)
         {
-            *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to compress" };
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if(dlg.SelectedPath != "") {
-                DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
-                CompressFileAndItsChildren(root);
-            }*//*
-        }
-
-        public void DecompressFolder(object sender, RoutedEventArgs e)
-        {
-            *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to decompress" };
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (dlg.SelectedPath != null)
+            using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
-                DecompressFileAndItsChildren(root);
-            }*//*
+                dlg.Title = "Open Image";
+                dlg.Filter = "bmp files (*.bmp)|*.bmp";
+                DialogResult result = dlg.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    SetImage(dlg.FileName);
+                    
+                }
+            }
         }
 
-        private static void CompressFile(string path)
-        {
-            using FileStream originalFileStream = File.Open(path, FileMode.Open);
-            using FileStream compressedFileStream = File.Create(path + ".gz");
-            using var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress);
-            originalFileStream.CopyTo(compressor);
-        }
+        //this may or may not help with getting the image
+        /*
+                public void CompressFolder(object sender, RoutedEventArgs e)
+                {
+                    *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to compress" };
+                    System.Windows.Forms.DialogResult result = dlg.ShowDialog();
+                    if(dlg.SelectedPath != "") {
+                        DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
+                        CompressFileAndItsChildren(root);
+                    }*//*
+                }
 
-        private static void DecompressFile(string path)
-        {
-            using FileStream compressedFileStream = File.Open(path, FileMode.Open);
-            using FileStream outputFileStream = File.Create(path.Substring(0, path.Length - 3));
-            using var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress);
-            decompressor.CopyTo(outputFileStream);
-        }*/
+                public void DecompressFolder(object sender, RoutedEventArgs e)
+                {
+                    *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to decompress" };
+                    System.Windows.Forms.DialogResult result = dlg.ShowDialog();
+                    if (dlg.SelectedPath != null)
+                    {
+                        DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
+                        DecompressFileAndItsChildren(root);
+                    }*//*
+                }
+
+                private static void CompressFile(string path)
+                {
+                    using FileStream originalFileStream = File.Open(path, FileMode.Open);
+                    using FileStream compressedFileStream = File.Create(path + ".gz");
+                    using var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress);
+                    originalFileStream.CopyTo(compressor);
+                }
+
+                private static void DecompressFile(string path)
+                {
+                    using FileStream compressedFileStream = File.Open(path, FileMode.Open);
+                    using FileStream outputFileStream = File.Create(path.Substring(0, path.Length - 3));
+                    using var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress);
+                    decompressor.CopyTo(outputFileStream);
+                }*/
     }
 }

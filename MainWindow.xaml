@@ -5,28 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:cybersecurity_encryption"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label Margin="62,40,694,365" Content="KEY"/>
-        <TextBox x:Name="keyBox" Margin="106,40,526,365" TextChanged="KeyChangedEventHandler">5</TextBox>
-        <TextBox x:Name="statusBox" Margin="62,367,526,43">Status</TextBox>
-        <Image Name="Image" Margin="419,4,0,2">
+        <Image Name="Image" Width="300" Margin="455,-52,45,51">
             <Image.Source>
-                <BitmapImage DecodePixelWidth="200"  
-                    UriSource="Resources/default.bmp" />
+                <BitmapImage DecodePixelWidth="300" UriSource="C:\\A Chudy Folder\\cybersecurity-encryption\\Resources\\shrek.bmp" />
             </Image.Source>
         </Image>
 
-        <Button x:Name="ECB" Click="EncryptECB" Margin="62,116,649,267" Content="ECB"/>
-        <ProgressBar x:Name="ECBprogressBar" Margin="168,116,431,292"/>
-        <TextBox x:Name="ECBTextBox" Margin="168,142,431,266"></TextBox>
+        <Button Content="ECB" Name="ECB" HorizontalAlignment="Left" Margin="62,116,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="54" Width="89"/>
+        <ProgressBar Name="ECBprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,116,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="ECBTextBox" HorizontalAlignment="Left" Margin="168,142,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
 
-        <Button x:Name="CBC" Click="EncryptCBC" Margin="62,187,649,197" Content="CBC"/>
-        <ProgressBar x:Name="CBCprogressBar" Margin="168,187,431,221"/>
-        <TextBox x:Name="CBCTextBox" Margin="168,211,431,197"/>
+        <Button Content="CBC" Name="CBC" HorizontalAlignment="Left" Margin="62,187,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="54" Width="89"/>
+        <ProgressBar Name="CBCprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,187,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="CBCTextBox" HorizontalAlignment="Left" Margin="168,211,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
 
-        <Button x:Name="CTR" Click="EncryptCTR" Margin="62,251,649,129" Content="CTR"/>
-        <ProgressBar x:Name="CTRprogressBar" Margin="168,251,431,160"/>
-        <TextBox x:Name="CTRTextBox" Margin="168,279,431,129"/>
+        <Button Content="CTR" Name="CTR" HorizontalAlignment="Left" Margin="62,251,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="54" Width="89"/>
+        <ProgressBar Name="CTRprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,251,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="CTRTextBox" HorizontalAlignment="Left" Margin="168,278,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
+
+        <Label Content="KEY" HorizontalAlignment="Left" Margin="62,29,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="keyBox" HorizontalAlignment="Left" Margin="108,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="KeyChangedEventHandler">5</TextBox>
+        <TextBox Name="statusBox" HorizontalAlignment="Left" Margin="62,343,0,0" TextWrapping="Wrap" Text="Status" VerticalAlignment="Top" Width="293" RenderTransformOrigin="-0.217,0.782" Height="27"/>
+        <Button Content="Open image" HorizontalAlignment="Left" Margin="298,42,0,0" VerticalAlignment="Top" Click="GetImage"/>
     </Grid>
 </Window>
