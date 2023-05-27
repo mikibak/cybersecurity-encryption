@@ -8,9 +8,16 @@
         ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image Name="Image" Width="300" Margin="455,-52,45,51">
+        
+        <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148">
             <Image.Source>
-                <BitmapImage DecodePixelWidth="300" UriSource="C:\\A Chudy Folder\\cybersecurity-encryption\\Resources\\shrek.bmp" />
+                <BitmapImage DecodePixelWidth="250" UriSource="Resources\\shrek.bmp" />
+            </Image.Source>
+        </Image>
+        
+        <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114">
+            <Image.Source>
+                <BitmapImage DecodePixelWidth="250" UriSource="Resources\\shrek.bmp" />
             </Image.Source>
         </Image>
 

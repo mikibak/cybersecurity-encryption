@@ -39,7 +39,6 @@ namespace cybersecurity_encryption
         public MainWindow()
         {
             InitializeComponent();
-            //SetImage("C:\\Users\\mikolaj\\cybersecurity-encryption\\Resources\\default.bmp");
             Key = 5;
         }
 
@@ -64,10 +63,8 @@ namespace cybersecurity_encryption
             BitmapImage myBitmapImage = new BitmapImage();
 
             // BitmapImage.UriSource must be in a BeginInit/EndInit block
-
             myBitmapImage.BeginInit();
             myBitmapImage.UriSource = new Uri(path);
-
             // To save significant application memory, set the DecodePixelWidth or
             // DecodePixelHeight of the BitmapImage value of the image source to the desired
             // height or width of the rendered image. If you don't do this, the application will
@@ -75,21 +72,19 @@ namespace cybersecurity_encryption
             // the size that is displayed.
             // Note: In order to preserve aspect ratio, set DecodePixelWidth
             // or DecodePixelHeight but not both.
-            myBitmapImage.DecodePixelWidth = 200;
+            myBitmapImage.DecodePixelWidth = (int)LoadedImage.Width;
             myBitmapImage.EndInit();
+
             //set image source
-            //Image.Source = myBitmapImage;
+            LoadedImage.Source = myBitmapImage;
 
             Bitmap bitmap1 = new Bitmap(path);
             var arr = BitmapToArray(bitmap1.Width,bitmap1.Height, bitmap1);
             byteArray = arr;//przypisujemy 
-            for (int i=0;i<arr.Length;i++)//for fun 
-            {
-                arr[i] = (byte)(255 -arr[i]);
-            }
-            Bitmap bmp = ArrayToBitmap(bitmap1.Width, bitmap1.Height, arr);
-            Image.Source = BitmapToBitmapImage(bmp);
-
+            //for (int i=0;i<arr.Length;i++)//for fun 
+            //{
+               // arr[i] = (byte)(255 -arr[i]);
+            //}
         }
         public byte[] BitmapToArray(int w, int h, Bitmap data)
         {
@@ -144,11 +139,20 @@ namespace cybersecurity_encryption
             bi.EndInit();
             return bi;
         }
-        
+        private void setModifiedImage(BitmapImage myBitmapImage)
+        {
+            ModifiedImage.Source = myBitmapImage;
+        }
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
+            BitmapImage myBitmapImage = new BitmapImage();
 
+            myBitmapImage.BeginInit();
+            myBitmapImage.UriSource = new Uri("C:\\Users\\48516\\Desktop\\Untitled.bmp");
+            myBitmapImage.DecodePixelWidth = (int)ModifiedImage.Width;
+            myBitmapImage.EndInit();
+            setModifiedImage(myBitmapImage);
         }
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
