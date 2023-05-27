@@ -33,20 +33,50 @@ namespace cybersecurity_encryption
 {
     public partial class MainWindow : Window
     {
+        private const int BLOCK_SIZE = 16;
         public double Key { get; set; }
         public byte[] byteArray { get; set; }
-
+        public byte[] cipherKey = new byte[BLOCK_SIZE];
+        private bool isEncrypting = true; //TEMPORARY VALUE FOR TESTS - LATER CREATE TWO BUTTONS - ONE FOR ENCRYPTION AND ONE FOR DECRYPTION
         public MainWindow()
         {
             InitializeComponent();
+            generateKey();
             Key = 5;
+        }
+
+        private void generateKey()
+        {
+            Random randGen = new Random();
+            for (int i = 0; i < cipherKey.Length; i++)
+            {
+                cipherKey[i] = (byte)randGen.Next(256);
+            }
+        }
+        private static void blockCipherDecryption(byte[] plaintext, byte[] cipherKey)
+        {
+            for (int i = 0; i < plaintext.Length; i++)
+            {
+                int tmpVal = (plaintext[i] + cipherKey[i]) % 256;
+                plaintext[i] = (byte)tmpVal;
+            }
+            Array.Reverse(plaintext);
+        }
+        private static void blockCipherEncryption(byte[] ciphertext, byte[] cipherKey)
+        {
+            Array.Reverse(ciphertext);
+            for (int i = 0; i < ciphertext.Length; i++)
+            {
+                int tmpVal = (ciphertext[i] - cipherKey[i] + 256) % 256;
+                ciphertext[i] = (byte)tmpVal;
+            }
         }
 
         private void KeyChangedEventHandler(object sender, TextChangedEventArgs args)
         {
             System.Windows.Controls.TextBox t = (System.Windows.Controls.TextBox)sender;
             double i;
-            if(double.TryParse(t.Text, out i) && i >= 0 && i <= 9999)
+            if (double.TryParse(t.Text, out i) && i >= 0 && i <= 9999)
             {
                 Key = i;
             }
@@ -79,17 +109,13 @@ namespace cybersecurity_encryption
             LoadedImage.Source = myBitmapImage;
 
             Bitmap bitmap1 = new Bitmap(path);
-            var arr = BitmapToArray(bitmap1.Width,bitmap1.Height, bitmap1);
-            byteArray = arr;//przypisujemy 
-            //for (int i=0;i<arr.Length;i++)//for fun 
-            //{
-               // arr[i] = (byte)(255 -arr[i]);
-            //}
+            var arr = BitmapToArray(bitmap1.Width, bitmap1.Height, bitmap1);
+            byteArray = arr;//przypisujemy
         }
         public byte[] BitmapToArray(int w, int h, Bitmap data)
         {
             byte[] dat = new byte[w * h * 4];
-            int iteratorr = 0;
+            int iterator = 0;
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
@@ -98,11 +124,11 @@ namespace cybersecurity_encryption
                     System.Drawing.Color p = data.GetPixel(x, y);
 
                     //extract ARGB value from p
-                    dat[iteratorr] = p.A;
-                    dat[iteratorr + 1] = p.R;
-                    dat[iteratorr + 2] = p.G;
-                    dat[iteratorr + 3] = p.B;
-                    iteratorr = iteratorr + 4;
+                    dat[iterator] = p.A;
+                    dat[iterator + 1] = p.R;
+                    dat[iterator + 2] = p.G;
+                    dat[iterator + 3] = p.B;
+                    iterator += 4;
                 }
             }
             return dat;
@@ -117,7 +143,7 @@ namespace cybersecurity_encryption
                 {
                     System.Drawing.Color c = System.Drawing.Color.FromArgb(
                        data[arrayIndex],
-                       data[arrayIndex +1],
+                       data[arrayIndex + 1],
                        data[arrayIndex + 2],
                        data[arrayIndex + 3]
                     );
@@ -128,7 +154,7 @@ namespace cybersecurity_encryption
             return pic;
         }
 
-        public  BitmapImage BitmapToBitmapImage( Bitmap bitmap)
+        public BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
             BitmapImage bi = new BitmapImage();
             bi.BeginInit();
@@ -146,13 +172,31 @@ namespace cybersecurity_encryption
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
-            BitmapImage myBitmapImage = new BitmapImage();
+            byte[] encryptedByteArray = new byte[byteArray.Length];
+            byteArray.CopyTo(encryptedByteArray, 0);
 
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri("C:\\Users\\48516\\Desktop\\Untitled.bmp");
-            myBitmapImage.DecodePixelWidth = (int)ModifiedImage.Width;
-            myBitmapImage.EndInit();
-            setModifiedImage(myBitmapImage);
+            byte[] block = new byte[BLOCK_SIZE];
+            long counter = 0;
+            while (true)
+            {
+                if (counter == byteArray.Length)
+                {
+                    break;
+                }
+                block[counter % 16] = byteArray[counter];
+                counter++;
+                if (counter % 16 == 0)
+                {
+                    if(isEncrypting) { blockCipherEncryption(block, cipherKey); }
+                    else { blockCipherDecryption(block, cipherKey); }
+                    block.CopyTo(encryptedByteArray, counter - 16);
+                }
+            }
+            encryptedByteArray.CopyTo(byteArray, 0);
+            Bitmap bitmap = ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            ModifiedImage.Source = BitmapToBitmapImage(bitmap);
+            setModifiedImage(BitmapToBitmapImage(bitmap));
+            isEncrypting = !isEncrypting;
         }
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
@@ -173,11 +217,12 @@ namespace cybersecurity_encryption
                 double progress = 0;
                 double currentNumber = 1;
 
-                for (double i = 1; i < Key; i++) {
+                for (double i = 1; i < Key; i++)
+                {
                     previouspreviousNumber = previousNumber;
                     previousNumber = currentNumber;
                     currentNumber = previouspreviousNumber + previousNumber;
-                    progress = (i* 100) / Key;
+                    progress = (i * 100) / Key;
                     bw.ReportProgress((int)progress);
                     Thread.Sleep(30);
                 }
@@ -210,7 +255,7 @@ namespace cybersecurity_encryption
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     SetImage(dlg.FileName);
-                    
+
                 }
             }
         }
