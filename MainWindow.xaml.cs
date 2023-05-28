@@ -117,6 +117,7 @@ namespace cybersecurity_encryption
         {
             SingleBlock.BLOCK_SIZE = Int32.Parse(BlockSizeVal.Text);
             cbc.GenerateIV();
+            ctr.GenerateIV();
             generateKey();
         }
 

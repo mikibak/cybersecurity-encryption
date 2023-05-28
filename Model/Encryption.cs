@@ -13,8 +13,8 @@ namespace cybersecurity_encryption.Model
         public Encryption() {
         }
         virtual public void GenerateIV() { }
-        public abstract byte[] Encrypt(byte[] key, byte[] message);
-        public abstract byte[] Decrypt(byte[] key, byte[] message);
+        public abstract byte[] Encrypt(byte[] key, byte[] plaintext);
+        public abstract byte[] Decrypt(byte[] key, byte[] ciphertext);
         public abstract void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV);
     }
 }

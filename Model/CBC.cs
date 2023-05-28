@@ -8,9 +8,7 @@ namespace cybersecurity_encryption.Model
 {
     internal class CBC : Encryption
     {
-        public CBC(){
-            GenerateIV();
-        }
+        public CBC() => GenerateIV();
         public byte[] IV;
         public override void GenerateIV()
         {
@@ -21,10 +19,10 @@ namespace cybersecurity_encryption.Model
                 IV[i] = (byte)randGen.Next(256);
             }
         }
-        public override byte[] Encrypt(byte[] key, byte[] message)
+        public override byte[] Encrypt(byte[] key, byte[] plaintext)
         {
-            byte[] encryptedByteArray = new byte[message.Length];
-            message.CopyTo(encryptedByteArray, 0);
+            byte[] encryptedByteArray = new byte[plaintext.Length];
+            plaintext.CopyTo(encryptedByteArray, 0);
             byte[] tmpIV = new byte[IV.Length];
             IV.CopyTo(tmpIV, 0);
 
@@ -32,12 +30,12 @@ namespace cybersecurity_encryption.Model
             long counter = 0;
             while (true)
             {
-                if (counter == message.Length)
+                if (counter == plaintext.Length)
                 {
                     break;
                 }
 
-                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = plaintext[counter];
                 block[counter % SingleBlock.BLOCK_SIZE] ^= tmpIV[counter%SingleBlock.BLOCK_SIZE];
 
                 counter++;
@@ -51,10 +49,10 @@ namespace cybersecurity_encryption.Model
             Padding(encryptedByteArray, true, key, tmpIV);
             return encryptedByteArray;
         }
-        public override byte[] Decrypt(byte[] key, byte[] message)
+        public override byte[] Decrypt(byte[] key, byte[] ciphertext)
         {
-            byte[] encryptedByteArray = new byte[message.Length];
-            message.CopyTo(encryptedByteArray, 0);
+            byte[] encryptedByteArray = new byte[ciphertext.Length];
+            ciphertext.CopyTo(encryptedByteArray, 0);
             byte[] tmpIV = new byte[IV.Length];
             byte[] nextIV = new byte[IV.Length];
             IV.CopyTo(tmpIV, 0);
@@ -64,11 +62,11 @@ namespace cybersecurity_encryption.Model
             long counter = 0;
             while (true)
             {
-                if (counter == message.Length)
+                if (counter == ciphertext.Length)
                 {
                     break;
                 }
-                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = ciphertext[counter];
                 counter++;
 
                 if (counter % SingleBlock.BLOCK_SIZE == 0)
@@ -90,13 +88,13 @@ namespace cybersecurity_encryption.Model
         public override void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV)
         {
             int padding = byteArray.Length % SingleBlock.BLOCK_SIZE;
-            byte[] block = new byte[padding];
-            for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
-            {
-                block[i % padding] = (byte)byteArray[i];
-            }
             if (padding != 0)
             {
+                byte[] block = new byte[padding];
+                for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
+                {
+                    block[i % padding] = (byte)byteArray[i];
+                }
                 if (isEncrypting) {
                     for(int i=0; i<block.Length; i++)
                     {
@@ -111,7 +109,6 @@ namespace cybersecurity_encryption.Model
                         block[i] ^= IV[i];
                     }
                 }
-
                 block.CopyTo(byteArray, byteArray.Length - padding - 1);
             }
         }

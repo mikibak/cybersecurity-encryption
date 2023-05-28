@@ -12,20 +12,20 @@ namespace cybersecurity_encryption.Model
     {
         public ECB(){}
 
-        public override byte[] Encrypt(byte[] key, byte[] message)
+        public override byte[] Encrypt(byte[] key, byte[] plaintext)
         {
-            byte[] encryptedByteArray = new byte[message.Length];
-            message.CopyTo(encryptedByteArray, 0);
+            byte[] encryptedByteArray = new byte[plaintext.Length];
+            plaintext.CopyTo(encryptedByteArray, 0);
 
             byte[] block = new byte[SingleBlock.BLOCK_SIZE];
             long counter = 0;
             while (true)
             {
-                if (counter == message.Length)
+                if (counter == plaintext.Length)
                 {
                     break;
                 }
-                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = plaintext[counter];
                 counter++;
                 if (counter % SingleBlock.BLOCK_SIZE == 0)
                 {
@@ -37,20 +37,20 @@ namespace cybersecurity_encryption.Model
             return encryptedByteArray;
         }
 
-        public override byte[] Decrypt(byte[] key, byte[] message)
+        public override byte[] Decrypt(byte[] key, byte[] ciphertext)
         {
-            byte[] encryptedByteArray = new byte[message.Length];
-            message.CopyTo(encryptedByteArray, 0);
+            byte[] encryptedByteArray = new byte[ciphertext.Length];
+            ciphertext.CopyTo(encryptedByteArray, 0);
 
             byte[] block = new byte[SingleBlock.BLOCK_SIZE];
             long counter = 0;
             while (true)
             {
-                if (counter == message.Length)
+                if (counter == ciphertext.Length)
                 {
                     break;
                 }
-                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = ciphertext[counter];
                 counter++;
                 if (counter % SingleBlock.BLOCK_SIZE == 0)
                 {
@@ -64,13 +64,13 @@ namespace cybersecurity_encryption.Model
         public override void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV)
         {
             int padding = byteArray.Length % SingleBlock.BLOCK_SIZE;
-            byte[] block = new byte[padding];
-            for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
-            {
-                block[i % padding] = (byte)byteArray[i];
-            }
             if (padding != 0)
             {
+                byte[] block = new byte[padding];
+                for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
+                {
+                    block[i % padding] = (byte)byteArray[i];
+                }
                 if (isEncrypting) { SingleBlock.EncryptBlock(cipherKey, block); }
                 else { SingleBlock.DecryptBlock(cipherKey, block); }
 
