@@ -15,14 +15,9 @@ namespace cybersecurity_encryption.Model
         public static int BLOCK_SIZE { get; set; } = 16;
     public static byte[] EncryptBlock(byte[] cipherKey, byte[] block)
         {
-            Array.Reverse(block);
             for (int i = 0; i < block.Length; i++)
             {
-                int tmpVal = (block[i] - cipherKey[i] + 256) % 256;
-                block[i] = (byte)tmpVal;
-
-                //more basic function
-                //block[i] = (byte)(block[i] ^ cipherKey[i]);
+                block[i] = (byte)(block[i] ^ cipherKey[i]);
             }
             return block;
         }
@@ -30,13 +25,8 @@ namespace cybersecurity_encryption.Model
         {
             for (int i = 0; i < block.Length; i++)
             {
-                int tmpVal = (block[i] + cipherKey[i]) % 256;
-                block[i] = (byte)tmpVal;
-
-                //more basic function
-                //block[i] = (byte)(block[i] ^ cipherKey[i]);
+                block[i] = (byte)(block[i] ^ cipherKey[i]);
             }
-            Array.Reverse(block);
             return block;
         }
         public static void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey)
