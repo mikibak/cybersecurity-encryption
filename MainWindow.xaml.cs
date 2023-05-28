@@ -168,52 +168,19 @@ namespace cybersecurity_encryption
 
         private void SaveChangedImage_Click(object sender, RoutedEventArgs e)
         {
-            if(this.changedImage != null&& !String.Equals(SavedFileName.Text, ""))
-            {
-                //string path = Directory.GetCurrentDirectory();
-                fileName = SavedFileName.Text;
-                changedImage.Save(("../../../Resources/"+ fileName + ".bmp"));
-                string path = @"../../../Resources/"+ fileName+".txt";
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    foreach (byte b in cipherKey)
-                        sw.WriteLine(b);
-                    foreach (byte b in cbc.IV)
-                        sw.WriteLine(b);
-                    foreach (byte b in ctr.IV)
-                        sw.WriteLine(b);
-                }
-            }
+            FileHanlder fileHanlder = new FileHanlder();
+            fileHanlder.SaveFile(changedImage, SavedFileName.Text, cipherKey, cbc, ctr);
         }
 
         private void ReadyKeyFile_Click(object sender, RoutedEventArgs e)
         {
-            using (OpenFileDialog dlg = new OpenFileDialog())
+            FileHanlder fileHanlder = new FileHanlder();
+            var result = fileHanlder.ReadKeyFromFile(cbc, ctr);
+            if (result != null)
             {
-                dlg.Title = "Open Key";
-                DialogResult result = dlg.ShowDialog();
-
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    var lineCount = File.ReadLines(dlg.FileName).Count();
-                    using (StreamReader sr = File.OpenText(dlg.FileName))
-                    {
-                        byte[] cipherKey_temp = new byte[lineCount];
-                        String s = "";
-                        int iter = 0;
-                        while ((s = sr.ReadLine()) != null)
-                        {
-                            if(iter<lineCount/3)
-                                cipherKey_temp[iter] = byte.Parse(s);
-                            else if(iter>=lineCount/3 && iter<(lineCount/3 * 2))
-                                cbc.IV[iter-lineCount/3] = byte.Parse(s);
-                            else
-                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);
-                            iter++;
-                        }
-                        cipherKey = cipherKey_temp;
-                    }
-                }
+                cipherKey = result.Item1;
+                cbc = result.Item2;
+                ctr=result.Item3;
             }
         }
     }
