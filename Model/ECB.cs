@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +9,54 @@ namespace cybersecurity_encryption.Model
 {
     internal class ECB : Encryption
     {
-        public ECB(byte[] key, byte[] message) : base(key, message) {}
+        public ECB(){}
 
         public override byte[] Encrypt(byte[] key, byte[] message)
         {
-            //TODO implement ECB
-            return message;
+            byte[] encryptedByteArray = new byte[message.Length];
+            message.CopyTo(encryptedByteArray, 0);
+
+            byte[] block = new byte[SingleBlock.BLOCK_SIZE];
+            long counter = 0;
+            while (true)
+            {
+                if (counter == message.Length)
+                {
+                    break;
+                }
+                block[counter % 16] = message[counter];
+                counter++;
+                if (counter % 16 == 0)
+                {
+                    SingleBlock.EncryptBlock(key, block);
+                    block.CopyTo(encryptedByteArray, counter - 16);
+                }
+            }
+            return encryptedByteArray;
         }
+
         public override byte[] Decrypt(byte[] key, byte[] message)
         {
-            //TODO implement ECB
-            return message;
+            byte[] encryptedByteArray = new byte[message.Length];
+            message.CopyTo(encryptedByteArray, 0);
+
+            byte[] block = new byte[SingleBlock.BLOCK_SIZE];
+            long counter = 0;
+            while (true)
+            {
+                if (counter == message.Length)
+                {
+                    break;
+                }
+                block[counter % 16] = message[counter];
+                counter++;
+                if (counter % 16 == 0)
+                {
+                    SingleBlock.DecryptBlock(key, block);
+                    block.CopyTo(encryptedByteArray, counter - 16);
+                }
+            }
+            return encryptedByteArray;
         }
     }
 }
