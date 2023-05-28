@@ -52,7 +52,7 @@ namespace cybersecurity_encryption.Model
                 if(isEncrypting) { SingleBlock.EncryptBlock(cipherKey, block); }
                 else { SingleBlock.DecryptBlock(cipherKey, block); }
 
-                block.CopyTo(byteArray, byteArray.Length - padding);
+                block.CopyTo(byteArray, byteArray.Length - padding - 1);
             }
         }
     }
