@@ -10,6 +10,7 @@ namespace cybersecurity_encryption.Model
     {
         public byte[] Key { get; set; }
         public byte[] Message { get; set; }
+        public byte[] IV { get; set; }
         public Encryption() {
         }
         virtual public void GenerateIV() { }

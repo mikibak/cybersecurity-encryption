@@ -9,7 +9,6 @@ namespace cybersecurity_encryption.Model
     internal class CBC : Encryption
     {
         public CBC() => GenerateIV();
-        public byte[] IV;
         public override void GenerateIV()
         {
             IV = new byte[SingleBlock.BLOCK_SIZE];

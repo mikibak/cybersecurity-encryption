@@ -178,6 +178,10 @@ namespace cybersecurity_encryption
                 {
                     foreach (byte b in cipherKey)
                         sw.WriteLine(b);
+                    foreach (byte b in cbc.IV)
+                        sw.WriteLine(b);
+                    foreach (byte b in ctr.IV)
+                        sw.WriteLine(b);
                 }
             }
         }
@@ -199,7 +203,12 @@ namespace cybersecurity_encryption
                         int iter = 0;
                         while ((s = sr.ReadLine()) != null)
                         {
-                            cipherKey_temp[iter] = byte.Parse(s);
+                            if(iter<lineCount/3)
+                                cipherKey_temp[iter] = byte.Parse(s);
+                            else if(iter>=lineCount/3 && iter<(lineCount/3 * 2))
+                                cbc.IV[iter-lineCount/3] = byte.Parse(s);
+                            else
+                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);
                             iter++;
                         }
                         cipherKey = cipherKey_temp;

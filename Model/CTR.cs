@@ -9,7 +9,6 @@ namespace cybersecurity_encryption.Model
     internal class CTR : Encryption
     {
         public CTR() => GenerateIV();
-        public byte[] IV;
         public override void GenerateIV()
         {
             IV = new byte[SingleBlock.BLOCK_SIZE];
