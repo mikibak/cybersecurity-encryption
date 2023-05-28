@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.Windows.Interop;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Media.Media3D;
+using System.Windows.Media.Animation;
 //using System.Windows.Forms;
 
 namespace cybersecurity_encryption
@@ -70,18 +71,26 @@ namespace cybersecurity_encryption
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
-            Encryption ecb = new ECB(cipherKey, byteArray, BLOCK_SIZE);
-            byte[] encryptedByteArray;
-            if (isEncrypting)
+            if(byteArray != null)
             {
-                encryptedByteArray = ecb.Encrypt();
+                Encryption ecb = new ECB(cipherKey, byteArray, BLOCK_SIZE);
+                byte[] newByteArray;
+                if (isEncrypting)
+                {
+                    newByteArray = ecb.Encrypt();
+                }
+                else
+                {
+                    newByteArray = ecb.Decrypt();
+                }
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, newByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+                setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+                isEncrypting = !isEncrypting;
             } else
             {
-                encryptedByteArray = ecb.Decrypt();
+                statusBox.Text = "Choose an image!";
             }
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
-            setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
-            isEncrypting = !isEncrypting;
+            
         }
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
