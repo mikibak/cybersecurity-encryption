@@ -39,6 +39,9 @@ namespace cybersecurity_encryption
         public byte[] byteArray { get; set; }
         public byte[] cipherKey;
 
+        private int ImageWidth;
+        private int ImageHeight;
+
         private Encryption ecb;
         private Encryption ctr;
         private Encryption cbc;
@@ -84,7 +87,7 @@ namespace cybersecurity_encryption
             stopwatch.Start();
             byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
             stopwatch.Stop();
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, byteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageHeight, ImageWidth, byteArray);
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
         }
@@ -100,7 +103,7 @@ namespace cybersecurity_encryption
             stopwatch.Start();
             byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
             stopwatch.Stop();
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, byteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageHeight, ImageWidth, byteArray);
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
         }
@@ -151,6 +154,8 @@ namespace cybersecurity_encryption
             {
                 LoadedImage.Source = bmpl.SetImage(LoadedImage);
                 byteArray = bmpl.GetByteArray();
+                ImageWidth = bmpl.GetWidth();
+                ImageHeight = bmpl.GetHeight();
             }
         }
     }

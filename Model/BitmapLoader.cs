@@ -11,6 +11,19 @@ namespace cybersecurity_encryption.Model
     public class BitmapLoader
     {
         private string FileName = "";
+        Bitmap? bitmap;
+
+        public int GetHeight()
+        {
+            if (bitmap == null) return -1;
+            return bitmap.Height;
+        }
+
+        public int GetWidth() {
+            if (bitmap == null) return -1;
+            return bitmap.Width;
+        }
+
         public bool GetImage()
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
@@ -48,8 +61,8 @@ namespace cybersecurity_encryption.Model
 
         public byte[] GetByteArray()
         {
-            Bitmap bitmap1 = new Bitmap(FileName);
-            var arr = BitmapToArray(bitmap1.Width, bitmap1.Height, bitmap1);
+            bitmap = new Bitmap(FileName);
+            var arr = BitmapToArray(bitmap.Width, bitmap.Height, bitmap);
             return arr;
         }
 
