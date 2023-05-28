@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace cybersecurity_encryption.Model
 {
@@ -32,6 +33,7 @@ namespace cybersecurity_encryption.Model
                     block.CopyTo(encryptedByteArray, counter - SingleBlock.BLOCK_SIZE);
                 }
             }
+            SingleBlock.Padding(encryptedByteArray, true, key);
             return encryptedByteArray;
         }
 
@@ -56,6 +58,7 @@ namespace cybersecurity_encryption.Model
                     block.CopyTo(encryptedByteArray, counter - SingleBlock.BLOCK_SIZE);
                 }
             }
+            SingleBlock.Padding(encryptedByteArray, false, key);
             return encryptedByteArray;
         }
     }

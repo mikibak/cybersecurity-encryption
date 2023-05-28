@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace cybersecurity_encryption.Model
 {
     internal static class SingleBlock
     {
-        public const int BLOCK_SIZE = 16;
+        public const int BLOCK_SIZE = 1024;
         public static byte[] EncryptBlock(byte[] cipherKey, byte[] block)
         {
             Array.Reverse(block);
@@ -17,6 +20,9 @@ namespace cybersecurity_encryption.Model
             {
                 int tmpVal = (block[i] - cipherKey[i] + 256) % 256;
                 block[i] = (byte)tmpVal;
+
+                //more basic function
+                //block[i] = (byte)(block[i] ^ cipherKey[i]);
             }
             return block;
         }
@@ -26,9 +32,28 @@ namespace cybersecurity_encryption.Model
             {
                 int tmpVal = (block[i] + cipherKey[i]) % 256;
                 block[i] = (byte)tmpVal;
+
+                //more basic function
+                //block[i] = (byte)(block[i] ^ cipherKey[i]);
             }
             Array.Reverse(block);
             return block;
+        }
+        public static void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey)
+        {
+            int padding = byteArray.Length % BLOCK_SIZE;
+            byte[] block = new byte[padding];
+            for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
+            {
+                block[i % padding] = (byte)byteArray[i];
+            }
+            if (padding != 0)
+            {
+                if(isEncrypting) { SingleBlock.EncryptBlock(cipherKey, block); }
+                else { SingleBlock.DecryptBlock(cipherKey, block); }
+
+                block.CopyTo(byteArray, byteArray.Length - padding);
+            }
         }
     }
 }
