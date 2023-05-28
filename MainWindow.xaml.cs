@@ -74,16 +74,15 @@ namespace cybersecurity_encryption
             if(byteArray != null)
             {
                 Encryption ecb = new ECB(cipherKey, byteArray, BLOCK_SIZE);
-                byte[] newByteArray;
                 if (isEncrypting)
                 {
-                    newByteArray = ecb.Encrypt();
+                    byteArray = ecb.Encrypt();
                 }
                 else
                 {
-                    newByteArray = ecb.Decrypt();
+                    byteArray = ecb.Decrypt();
                 }
-                Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, newByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, byteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
                 setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
                 isEncrypting = !isEncrypting;
             } else
