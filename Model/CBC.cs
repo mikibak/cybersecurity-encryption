@@ -9,10 +9,10 @@ namespace cybersecurity_encryption.Model
     internal class CBC : Encryption
     {
         public CBC(){
-            generateIV();
+            GenerateIV();
         }
         public byte[] IV;
-        private void generateIV()
+        public override void GenerateIV()
         {
             IV = new byte[SingleBlock.BLOCK_SIZE];
             Random randGen = new Random();
