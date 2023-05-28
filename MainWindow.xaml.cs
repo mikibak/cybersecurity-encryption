@@ -30,6 +30,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
 using System.DirectoryServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace cybersecurity_encryption
 {
@@ -74,6 +75,11 @@ namespace cybersecurity_encryption
 
         private long Encrypt(Encryption encryption)
         {
+            if(byteArray == null)
+            {
+                System.Windows.MessageBox.Show("Choose image to encrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
@@ -85,6 +91,11 @@ namespace cybersecurity_encryption
 
         private long Decrypt(Encryption encryption)
         {
+            if (byteArray == null)
+            {
+                System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
