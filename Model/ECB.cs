@@ -24,12 +24,12 @@ namespace cybersecurity_encryption.Model
                 {
                     break;
                 }
-                block[counter % 16] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
                 counter++;
-                if (counter % 16 == 0)
+                if (counter % SingleBlock.BLOCK_SIZE == 0)
                 {
                     SingleBlock.EncryptBlock(key, block);
-                    block.CopyTo(encryptedByteArray, counter - 16);
+                    block.CopyTo(encryptedByteArray, counter - SingleBlock.BLOCK_SIZE);
                 }
             }
             return encryptedByteArray;
@@ -48,12 +48,12 @@ namespace cybersecurity_encryption.Model
                 {
                     break;
                 }
-                block[counter % 16] = message[counter];
+                block[counter % SingleBlock.BLOCK_SIZE] = message[counter];
                 counter++;
-                if (counter % 16 == 0)
+                if (counter % SingleBlock.BLOCK_SIZE == 0)
                 {
                     SingleBlock.DecryptBlock(key, block);
-                    block.CopyTo(encryptedByteArray, counter - 16);
+                    block.CopyTo(encryptedByteArray, counter - SingleBlock.BLOCK_SIZE);
                 }
             }
             return encryptedByteArray;
