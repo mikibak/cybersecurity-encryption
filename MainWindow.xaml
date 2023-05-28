@@ -9,8 +9,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Content="Open image" HorizontalAlignment="Left" Margin="62,28,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
-        <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148"/>
-        <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114"/>
+        <Image Name="LoadedImage" Width="250" Margin="418,-57,132,147"/>
+        <Image Name="ModifiedImage" Width="250" Margin="418,97,132,-99"/>
 
         <Label Content="Block Size (in bytes):" HorizontalAlignment="Left" Margin="59,322,0,0" VerticalAlignment="Top" Height="32" RenderTransformOrigin="0.483,9.586"/>
         <TextBox Name="BlockSizeVal" HorizontalAlignment="Left" Margin="62,345,0,0" TextWrapping="Wrap" Text="16" VerticalAlignment="Top" Width="65"/>
