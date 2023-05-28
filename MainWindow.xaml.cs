@@ -108,6 +108,7 @@ namespace cybersecurity_encryption
         public void ChangeBlockSize(object sender, RoutedEventArgs e)
         {
             SingleBlock.BLOCK_SIZE = Int32.Parse(BlockSizeVal.Text);
+            cbc.GenerateIV();
             generateKey();
         }
 
