@@ -29,6 +29,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
 using System.DirectoryServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace cybersecurity_encryption
 {
@@ -71,20 +72,26 @@ namespace cybersecurity_encryption
             generateKey();
         }
 
-        private void Encrypt(Encryption encryption)
+        private long Encrypt(Encryption encryption)
         {
-            byte[] encryptedByteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
-            byteArray = encryptedByteArray;
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
+            stopwatch.Stop();
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, byteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+            return stopwatch.ElapsedMilliseconds;
         }
 
-        private void Decrypt(Encryption encryption)
+        private long Decrypt(Encryption encryption)
         {
-            byte[] decryptedByteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
-            byteArray = decryptedByteArray;
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, decryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
+            stopwatch.Stop();
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, byteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+            return stopwatch.ElapsedMilliseconds;
         }
 
         public void ChangeBlockSize(object sender, RoutedEventArgs e)
@@ -95,29 +102,35 @@ namespace cybersecurity_encryption
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
-            Encrypt(ecb);
+            long time = Encrypt(ecb);
+            ECB_Timer.Text = "ECB Time: " + time + " ms";
         }
         public void DecryptECB(object sender, RoutedEventArgs e)
         {
-            Decrypt(ecb);
+            long time = Decrypt(ecb);
+            ECB_Timer.Text = "ECB Time: " + time + " ms";
         }
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
-            Encrypt(cbc);
+            long time = Encrypt(cbc);
+            CBC_Timer.Text = "CBC Time: " + time + " ms";
         }
         public void DecryptCBC(object sender, RoutedEventArgs e)
         {
-            Decrypt(cbc);
+            long time = Decrypt(cbc);
+            CBC_Timer.Text = "CBC Time: " + time + " ms";
         }
 
         public void EncryptCTR(object sender, RoutedEventArgs e)
         {
-            Encrypt(ctr);
+            long time = Encrypt(ctr);
+            CTR_Timer.Text = "CTR Time: " + time + " ms";
         }
         public void DecryptCTR(object sender, RoutedEventArgs e)
         {
-            Decrypt(ctr);
+            long time = Decrypt(ctr);
+            CTR_Timer.Text = "CTR Time: " + time + " ms";
         }
 
         private void GetImage(object sender, RoutedEventArgs e)
