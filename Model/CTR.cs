@@ -8,7 +8,7 @@ namespace cybersecurity_encryption.Model
 {
     internal class CTR : Encryption
     {
-        public CTR(byte[] key, byte[] message) : base(key, message) { }
+        public CTR() { }
 
         public override byte[] Encrypt(byte[] key, byte[] message)
         {
@@ -20,5 +20,6 @@ namespace cybersecurity_encryption.Model
             //TODO implement CTR
             return message;
         }
+        public override void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV) { }
     }
 }

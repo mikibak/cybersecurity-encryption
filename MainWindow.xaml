@@ -5,28 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:cybersecurity_encryption"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label Margin="62,40,694,365" Content="KEY"/>
-        <TextBox x:Name="keyBox" Margin="106,40,526,365" TextChanged="KeyChangedEventHandler">5</TextBox>
-        <TextBox x:Name="statusBox" Margin="62,367,526,43">Status</TextBox>
-        <Image Name="Image" Margin="419,4,0,2">
-            <Image.Source>
-                <BitmapImage DecodePixelWidth="200"  
-                    UriSource="Resources/default.bmp" />
-            </Image.Source>
-        </Image>
+        <Button Content="Open image" HorizontalAlignment="Left" Margin="298,41,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263"/>
+        <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148"/>
+        <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114"/>
 
-        <Button x:Name="ECB" Click="EncryptECB" Margin="62,116,649,267" Content="ECB"/>
-        <ProgressBar x:Name="ECBprogressBar" Margin="168,116,431,292"/>
-        <TextBox x:Name="ECBTextBox" Margin="168,142,431,266"></TextBox>
+        <Label Content="Block Size:" HorizontalAlignment="Left" Margin="62,19,0,0" VerticalAlignment="Top" Height="32"/>
+        <TextBox Name="BlockSizeVal" HorizontalAlignment="Left" Margin="62,42,0,0" TextWrapping="Wrap" Text="16" VerticalAlignment="Top" Width="65"/>
+        <Button Content="Change" HorizontalAlignment="Left" Margin="132,41,0,0" VerticalAlignment="Top" Click="ChangeBlockSize"/>
 
-        <Button x:Name="CBC" Click="EncryptCBC" Margin="62,187,649,197" Content="CBC"/>
-        <ProgressBar x:Name="CBCprogressBar" Margin="168,187,431,221"/>
-        <TextBox x:Name="CBCTextBox" Margin="168,211,431,197"/>
+        <Button Content="Reroll Key" HorizontalAlignment="Left" Margin="192,41,0,0" VerticalAlignment="Top" Width="94" Click="RerollKey"/>
 
-        <Button x:Name="CTR" Click="EncryptCTR" Margin="62,251,649,129" Content="CTR"/>
-        <ProgressBar x:Name="CTRprogressBar" Margin="168,251,431,160"/>
-        <TextBox x:Name="CTRTextBox" Margin="168,279,431,129"/>
+        <Label Content="ECB" HorizontalAlignment="Left" Margin="62,68,0,0" VerticalAlignment="Top" Width="89" Height="36"/>
+        <Button Content="Encrypt" Name="ECB_Encrypt" HorizontalAlignment="Left" Margin="62,94,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="21" Width="89"/>
+        <Button Content="Decrypt" Name="ECB_Decrypt" HorizontalAlignment="Left" Margin="62,125,0,0" VerticalAlignment="Top"  Click="DecryptECB" Height="21" Width="89"/>
+        <ProgressBar Name="ECBprogressBar" HorizontalAlignment="Left" Height="22" Margin="166,104,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="ECB_Timer" HorizontalAlignment="Left" Margin="166,131,0,0" TextWrapping="Wrap" Text="ECB Time: XX:XX" VerticalAlignment="Top" Width="120"/>
+
+        <Label Content="CBC" HorizontalAlignment="Left" Margin="62,156,0,0" VerticalAlignment="Top" Width="89" Height="36"/>
+        <Button Content="Encrypt" Name="CBC_Encrypt" HorizontalAlignment="Left" Margin="62,181,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="21" Width="89"/>
+        <Button Content="Decrypt" Name="CBC_Decrypt" HorizontalAlignment="Left" Margin="62,211,0,0" VerticalAlignment="Top"  Click="DecryptCBC" Height="21" Width="89"/>
+        <ProgressBar Name="CBCprogressBar" HorizontalAlignment="Left" Height="20" Margin="166,192,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="CBC_Timer" HorizontalAlignment="Left" Margin="166,217,0,0" TextWrapping="Wrap" Text="CBC Time: XX:XX" VerticalAlignment="Top" Width="120"/>
+
+        <Label Content="CTR" HorizontalAlignment="Left" Margin="62,239,0,0" VerticalAlignment="Top" Width="89" Height="36"/>
+        <Button Content="Encrypt" Name="CTR_Encrypt" HorizontalAlignment="Left" Margin="62,265,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="20" Width="89"/>
+        <Button Content="Decrypt" Name="CTR_Decrypt" HorizontalAlignment="Left" Margin="62,294,0,0" VerticalAlignment="Top"  Click="DecryptCTR" Height="21" Width="89"/>
+        <ProgressBar Name="CTRprogressBar" HorizontalAlignment="Left" Height="20" Margin="166,275,0,0" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="CTR_Timer" HorizontalAlignment="Left" Margin="166,300,0,0" TextWrapping="Wrap" Text="CTR Time: XX:XX" VerticalAlignment="Top" Width="120"/>
+
     </Grid>
 </Window>

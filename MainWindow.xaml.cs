@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -21,144 +21,143 @@ using System.Windows.Shapes;
 using System.Runtime.Intrinsics.X86;
 using System.Net;
 using cybersecurity_encryption.Model;
-//using System.Windows.Forms;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Interop;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Media.Media3D;
+using System.Windows.Media.Animation;
+using System.DirectoryServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace cybersecurity_encryption
 {
     public partial class MainWindow : Window
     {
-        public double Key { get; set; }
+        public byte[] byteArray { get; set; }
+        public byte[] cipherKey;
+
+        private int ImageWidth;
+        private int ImageHeight;
+
+        private Encryption ecb;
+        private Encryption ctr;
+        private Encryption cbc;
 
         public MainWindow()
         {
             InitializeComponent();
-            //SetImage("C:\\Users\\mikolaj\\cybersecurity-encryption\\Resources\\default.bmp");
-            Key = 5;
+
+            ecb = new ECB();
+            ctr = new CTR();
+            cbc = new CBC();
+            generateKey();
         }
 
-        private void KeyChangedEventHandler(object sender, TextChangedEventArgs args)
+        private void generateKey()
         {
-            TextBox t = (TextBox)sender;
-            double i;
-            if(double.TryParse(t.Text, out i) && i >= 0 && i <= 9999)
+            cipherKey = new byte[SingleBlock.BLOCK_SIZE];
+            Random randGen = new Random();
+            for (int i = 0; i < cipherKey.Length; i++)
             {
-                Key = i;
-            }
-            else
-            {
-                statusBox.Text = "Write correct number!";
+                cipherKey[i] = (byte)randGen.Next(256);
             }
         }
 
-        public void SetImage(string path)
+        private void setModifiedImage(BitmapImage myBitmapImage)
         {
-            Image = new Image();
-            Image.Width = 200;
-            // Create source
-            BitmapImage myBitmapImage = new BitmapImage();
+            ModifiedImage.Source = myBitmapImage;
+        }
+        
+        public void RerollKey(object sender, RoutedEventArgs e)
+        {
+            generateKey();
+        }
 
-            // BitmapImage.UriSource must be in a BeginInit/EndInit block
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri(path);
+        private long Encrypt(Encryption encryption)
+        {
+            if(byteArray == null)
+            {
+                System.Windows.MessageBox.Show("Choose image to encrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
+            stopwatch.Stop();
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+            setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+            return stopwatch.ElapsedMilliseconds;
+        }
 
-            // To save significant application memory, set the DecodePixelWidth or
-            // DecodePixelHeight of the BitmapImage value of the image source to the desired
-            // height or width of the rendered image. If you don't do this, the application will
-            // cache the image as though it were rendered as its normal size rather than just
-            // the size that is displayed.
-            // Note: In order to preserve aspect ratio, set DecodePixelWidth
-            // or DecodePixelHeight but not both.
-            myBitmapImage.DecodePixelWidth = 200;
-            myBitmapImage.EndInit();
-            //set image source
-            Image.Source = myBitmapImage;
+        private long Decrypt(Encryption encryption)
+        {
+            if (byteArray == null)
+            {
+                System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
+            stopwatch.Stop();
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+            setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+            return stopwatch.ElapsedMilliseconds;
+        }
+
+        public void ChangeBlockSize(object sender, RoutedEventArgs e)
+        {
+            SingleBlock.BLOCK_SIZE = Int32.Parse(BlockSizeVal.Text);
+            cbc.GenerateIV();
+            generateKey();
         }
 
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
-
+            long time = Encrypt(ecb);
+            ECB_Timer.Text = "ECB Time: " + time + " ms";
+        }
+        public void DecryptECB(object sender, RoutedEventArgs e)
+        {
+            long time = Decrypt(ecb);
+            ECB_Timer.Text = "ECB Time: " + time + " ms";
         }
 
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
-
+            long time = Encrypt(cbc);
+            CBC_Timer.Text = "CBC Time: " + time + " ms";
+        }
+        public void DecryptCBC(object sender, RoutedEventArgs e)
+        {
+            long time = Decrypt(cbc);
+            CBC_Timer.Text = "CBC Time: " + time + " ms";
         }
 
         public void EncryptCTR(object sender, RoutedEventArgs e)
         {
-            //This code actually calculates fibonacci sequence
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (object sender, DoWorkEventArgs args) =>
-            {
-                BackgroundWorker worker = sender as BackgroundWorker;
-                double previouspreviousNumber;
-                double previousNumber = 0;
-                double progress = 0;
-                double currentNumber = 1;
-
-                for (double i = 1; i < Key; i++) {
-                    previouspreviousNumber = previousNumber;
-                    previousNumber = currentNumber;
-                    currentNumber = previouspreviousNumber + previousNumber;
-                    progress = (i* 100) / Key;
-                    bw.ReportProgress((int)progress);
-                    Thread.Sleep(30);
-                }
-                args.Result = currentNumber;
-            };
-            bw.ProgressChanged += ((object sender, ProgressChangedEventArgs args) =>
-            {
-                CTRprogressBar.Value = args.ProgressPercentage;
-            });
-            bw.RunWorkerCompleted += ((object sender, RunWorkerCompletedEventArgs args) =>
-            {
-                CTRprogressBar.Value = 100;
-                MessageBox.Show("Result: " + args.Result);
-                CTRTextBox.Text = "CTR time: " + 2137;
-                CTRprogressBar.Value = 0;
-            });
-
-            bw.WorkerReportsProgress = true;
-            bw.RunWorkerAsync(100);
+            long time = Encrypt(ctr);
+            CTR_Timer.Text = "CTR Time: " + time + " ms";
+        }
+        public void DecryptCTR(object sender, RoutedEventArgs e)
+        {
+            long time = Decrypt(ctr);
+            CTR_Timer.Text = "CTR Time: " + time + " ms";
         }
 
-        //this may or may not help with getting the image
-/*
-        public void CompressFolder(object sender, RoutedEventArgs e)
+        private void GetImage(object sender, RoutedEventArgs e)
         {
-            *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to compress" };
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if(dlg.SelectedPath != "") {
-                DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
-                CompressFileAndItsChildren(root);
-            }*//*
-        }
-
-        public void DecompressFolder(object sender, RoutedEventArgs e)
-        {
-            *//*var dlg = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select directory to decompress" };
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (dlg.SelectedPath != null)
+            BitmapLoader bmpl = new BitmapLoader();
+            if (bmpl.GetImage())
             {
-                DirectoryInfo root = new DirectoryInfo(dlg.SelectedPath);
-                DecompressFileAndItsChildren(root);
-            }*//*
+                LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                byteArray = bmpl.GetByteArray();
+                ImageWidth = bmpl.GetWidth();
+                ImageHeight = bmpl.GetHeight();
+            }
         }
-
-        private static void CompressFile(string path)
-        {
-            using FileStream originalFileStream = File.Open(path, FileMode.Open);
-            using FileStream compressedFileStream = File.Create(path + ".gz");
-            using var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress);
-            originalFileStream.CopyTo(compressor);
-        }
-
-        private static void DecompressFile(string path)
-        {
-            using FileStream compressedFileStream = File.Open(path, FileMode.Open);
-            using FileStream outputFileStream = File.Create(path.Substring(0, path.Length - 3));
-            using var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress);
-            decompressor.CopyTo(outputFileStream);
-        }*/
     }
 }
