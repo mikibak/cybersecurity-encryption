@@ -12,7 +12,7 @@
         <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148"/>
         <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114"/>
 
-        <Label Content="Block Size:" HorizontalAlignment="Left" Margin="62,19,0,0" VerticalAlignment="Top" Height="32"/>
+        <Label Content="Block Size (in bytes):" HorizontalAlignment="Left" Margin="62,19,0,0" VerticalAlignment="Top" Height="32"/>
         <TextBox Name="BlockSizeVal" HorizontalAlignment="Left" Margin="62,42,0,0" TextWrapping="Wrap" Text="16" VerticalAlignment="Top" Width="65"/>
         <Button Content="Change" HorizontalAlignment="Left" Margin="132,41,0,0" VerticalAlignment="Top" Click="ChangeBlockSize"/>
 
