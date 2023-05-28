@@ -29,21 +29,5 @@ namespace cybersecurity_encryption.Model
             }
             return block;
         }
-        public static void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey)
-        {
-            int padding = byteArray.Length % BLOCK_SIZE;
-            byte[] block = new byte[padding];
-            for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
-            {
-                block[i % padding] = (byte)byteArray[i];
-            }
-            if (padding != 0)
-            {
-                if(isEncrypting) { SingleBlock.EncryptBlock(cipherKey, block); }
-                else { SingleBlock.DecryptBlock(cipherKey, block); }
-
-                block.CopyTo(byteArray, byteArray.Length - padding - 1);
-            }
-        }
     }
 }

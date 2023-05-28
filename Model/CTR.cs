@@ -20,5 +20,6 @@ namespace cybersecurity_encryption.Model
             //TODO implement CTR
             return message;
         }
+        public override void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV) { }
     }
 }

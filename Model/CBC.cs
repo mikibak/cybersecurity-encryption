@@ -48,7 +48,7 @@ namespace cybersecurity_encryption.Model
                     block.CopyTo(tmpIV, 0);
                 }
             }
-            //SingleBlock.Padding(encryptedByteArray, true, key); TODO rework padding
+            Padding(encryptedByteArray, true, key, tmpIV);
             return encryptedByteArray;
         }
         public override byte[] Decrypt(byte[] key, byte[] message)
@@ -84,8 +84,36 @@ namespace cybersecurity_encryption.Model
                     block.CopyTo(encryptedByteArray, counter - SingleBlock.BLOCK_SIZE);
                 }
             }
-            //SingleBlock.Padding(encryptedByteArray, true, key); TODO rework padding
+            Padding(encryptedByteArray, true, key, nextIV);
             return encryptedByteArray;
+        }
+        public override void Padding(byte[] byteArray, bool isEncrypting, byte[] cipherKey, byte[]? IV)
+        {
+            int padding = byteArray.Length % SingleBlock.BLOCK_SIZE;
+            byte[] block = new byte[padding];
+            for (int i = (int)(byteArray.Length - padding); i < byteArray.Length; i++)
+            {
+                block[i % padding] = (byte)byteArray[i];
+            }
+            if (padding != 0)
+            {
+                if (isEncrypting) {
+                    for(int i=0; i<block.Length; i++)
+                    {
+                        block[i] ^= IV[i];
+                    }
+                    SingleBlock.EncryptBlock(cipherKey, block);
+                }
+                else { 
+                    SingleBlock.DecryptBlock(cipherKey, block);
+                    for (int i = 0; i < block.Length; i++)
+                    {
+                        block[i] ^= IV[i];
+                    }
+                }
+
+                block.CopyTo(byteArray, byteArray.Length - padding - 1);
+            }
         }
     }
 }
