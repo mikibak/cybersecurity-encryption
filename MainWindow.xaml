@@ -8,7 +8,7 @@
         ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Open image" HorizontalAlignment="Left" Margin="62,28,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263" Height="18" Width="89"/>
+        <Button Content="Open image" HorizontalAlignment="Left" Margin="62,28,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
         <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148"/>
         <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114"/>
 
@@ -34,7 +34,7 @@
         <TextBox Name="CTR_Timer" HorizontalAlignment="Left" Margin="166,275,0,0" TextWrapping="Wrap" Text="CTR Time: XX:XX" VerticalAlignment="Top" Width="120" Height="29"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="192,374,0,0" VerticalAlignment="Top" Name="Save" Click="SaveChangedImage_Click" RenderTransformOrigin="0.593,1.355" Width="59"/>
         <TextBox HorizontalAlignment="Left" Margin="62,374,0,0" TextWrapping="Wrap" Text="FileName to save" VerticalAlignment="Top" Width="117" Name="SavedFileName" Height="20"/>
-        <Button Content="Read key" HorizontalAlignment="Left" Margin="169,28,0,0" VerticalAlignment="Top" Click="ReadyKeyFile_Click" Height="18" Width="89" RenderTransformOrigin="0.076,0.447"/>
+        <Button Content="Read key" HorizontalAlignment="Left" Margin="169,28,0,0" VerticalAlignment="Top" Click="ReadyKeyFile_Click" Height="27" Width="89" RenderTransformOrigin="0.076,0.447"/>
 
     </Grid>
 </Window>
