@@ -21,15 +21,15 @@
             </Image.Source>
         </Image>
 
-        <Button Content="ECB" Name="ECB" HorizontalAlignment="Left" Margin="62,116,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="54" Width="89"/>
+        <Button Content="ECB" Name="ButtonECB" HorizontalAlignment="Left" Margin="62,116,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="54" Width="89"/>
         <ProgressBar Name="ECBprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,116,0,0" VerticalAlignment="Top" Width="201"/>
         <TextBox Name="ECBTextBox" HorizontalAlignment="Left" Margin="168,142,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
 
-        <Button Content="CBC" Name="CBC" HorizontalAlignment="Left" Margin="62,187,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="54" Width="89"/>
+        <Button Content="CBC" Name="ButtonCBC" HorizontalAlignment="Left" Margin="62,187,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="54" Width="89"/>
         <ProgressBar Name="CBCprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,187,0,0" VerticalAlignment="Top" Width="201"/>
         <TextBox Name="CBCTextBox" HorizontalAlignment="Left" Margin="168,211,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
 
-        <Button Content="CTR" Name="CTR" HorizontalAlignment="Left" Margin="62,251,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="54" Width="89"/>
+        <Button Content="CTR" Name="ButtonCTR" HorizontalAlignment="Left" Margin="62,251,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="54" Width="89"/>
         <ProgressBar Name="CTRprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,251,0,0" VerticalAlignment="Top" Width="201"/>
         <TextBox Name="CTRTextBox" HorizontalAlignment="Left" Margin="168,278,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="201" Height="27"/>
 
