@@ -36,9 +36,9 @@ namespace cybersecurity_encryption
         public byte[] byteArray { get; set; }
         public byte[] cipherKey = new byte[SingleBlock.BLOCK_SIZE];
 
-        private ECB ecb;
-        private CTR ctr;
-        private CBC cbc;
+        private Encryption ecb;
+        private Encryption ctr;
+        private Encryption cbc;
 
         public MainWindow()
         {
@@ -63,33 +63,47 @@ namespace cybersecurity_encryption
             ModifiedImage.Source = myBitmapImage;
         }
 
-        public void EncryptECB(object sender, RoutedEventArgs e)
+        private void Encrypt(Encryption encryption)
         {
-            byte [] encryptedByteArray = ecb.Encrypt(this.cipherKey, this.byteArray);
+            byte[] encryptedByteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
             byteArray = encryptedByteArray;
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
         }
-        public void DecryptECB(object sender, RoutedEventArgs e)
+
+        private void Decrypt(Encryption encryption)
         {
-            byte[] decryptedByteArray = ecb.Decrypt(this.cipherKey, this.byteArray);
-            byteArray=decryptedByteArray;
+            byte[] decryptedByteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
+            byteArray = decryptedByteArray;
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, decryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
         }
 
+        public void EncryptECB(object sender, RoutedEventArgs e)
+        {
+            Encrypt(ecb);
+        }
+        public void DecryptECB(object sender, RoutedEventArgs e)
+        {
+            Decrypt(ecb);
+        }
+
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
+            Encrypt(cbc);
         }
         public void DecryptCBC(object sender, RoutedEventArgs e)
         {
+            Decrypt(cbc);
         }
 
         public void EncryptCTR(object sender, RoutedEventArgs e)
         {
+            Encrypt(ctr);
         }
         public void DecryptCTR(object sender, RoutedEventArgs e)
         {
+            Decrypt(ctr);
         }
 
         private void GetImage(object sender, RoutedEventArgs e)
