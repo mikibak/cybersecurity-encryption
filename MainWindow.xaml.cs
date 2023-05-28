@@ -31,6 +31,7 @@ using System.Windows.Media.Animation;
 using System.DirectoryServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Drawing.Design;
 
 namespace cybersecurity_encryption
 {
@@ -45,7 +46,8 @@ namespace cybersecurity_encryption
         private Encryption ecb;
         private Encryption ctr;
         private Encryption cbc;
-
+        string fileName = "shrekko";
+        Bitmap changedImage;
         public MainWindow()
         {
             InitializeComponent();
@@ -69,6 +71,7 @@ namespace cybersecurity_encryption
         private void setModifiedImage(BitmapImage myBitmapImage)
         {
             ModifiedImage.Source = myBitmapImage;
+            
         }
         
         public void RerollKey(object sender, RoutedEventArgs e)
@@ -88,6 +91,7 @@ namespace cybersecurity_encryption
             byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
             stopwatch.Stop();
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+            changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
         }
@@ -104,6 +108,7 @@ namespace cybersecurity_encryption
             byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
             stopwatch.Stop();
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+            changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
         }
@@ -157,6 +162,48 @@ namespace cybersecurity_encryption
                 byteArray = bmpl.GetByteArray();
                 ImageWidth = bmpl.GetWidth();
                 ImageHeight = bmpl.GetHeight();
+            }
+        }
+
+        private void SaveChangedImage_Click(object sender, RoutedEventArgs e)
+        {
+            if(this.changedImage != null&& !String.Equals(SavedFileName.Text, ""))
+            {
+                //string path = Directory.GetCurrentDirectory();
+                fileName = SavedFileName.Text;
+                changedImage.Save(("../../../Resources/"+ fileName + ".bmp"));
+                string path = @"../../../Resources/"+ fileName+".txt";
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    foreach (byte b in cipherKey)
+                        sw.WriteLine(b);
+                }
+            }
+        }
+
+        private void ReadyKeyFile_Click(object sender, RoutedEventArgs e)
+        {
+            using (OpenFileDialog dlg = new OpenFileDialog())
+            {
+                dlg.Title = "Open Key";
+                DialogResult result = dlg.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var lineCount = File.ReadLines(dlg.FileName).Count();
+                    using (StreamReader sr = File.OpenText(dlg.FileName))
+                    {
+                        byte[] cipherKey_temp = new byte[lineCount];
+                        String s = "";
+                        int iter = 0;
+                        while ((s = sr.ReadLine()) != null)
+                        {
+                            cipherKey_temp[iter] = byte.Parse(s);
+                            iter++;
+                        }
+                        cipherKey = cipherKey_temp;
+                    }
+                }
             }
         }
     }

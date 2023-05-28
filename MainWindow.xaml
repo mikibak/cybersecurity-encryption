@@ -35,6 +35,9 @@
         <Button Content="Decrypt" Name="CTR_Decrypt" HorizontalAlignment="Left" Margin="62,294,0,0" VerticalAlignment="Top"  Click="DecryptCTR" Height="21" Width="89"/>
         <ProgressBar Name="CTRprogressBar" HorizontalAlignment="Left" Height="20" Margin="166,275,0,0" VerticalAlignment="Top" Width="201"/>
         <TextBox Name="CTR_Timer" HorizontalAlignment="Left" Margin="166,300,0,0" TextWrapping="Wrap" Text="CTR Time: XX:XX" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="62,362,0,0" VerticalAlignment="Top" Name="Save" Click="SaveChangedImage_Click"/>
+        <TextBox HorizontalAlignment="Left" Margin="113,362,0,0" TextWrapping="Wrap" Text="FileName to save" VerticalAlignment="Top" Width="120" Name="SavedFileName"/>
+        <Button Content="Read key" HorizontalAlignment="Left" Margin="69,331,0,0" VerticalAlignment="Top" Click="ReadyKeyFile_Click"/>
 
     </Grid>
 </Window>
