@@ -12,8 +12,8 @@ namespace cybersecurity_encryption.Model
 {
     internal static class SingleBlock
     {
-        public const int BLOCK_SIZE = 1024;
-        public static byte[] EncryptBlock(byte[] cipherKey, byte[] block)
+        public static int BLOCK_SIZE { get; set; } = 16;
+    public static byte[] EncryptBlock(byte[] cipherKey, byte[] block)
         {
             Array.Reverse(block);
             for (int i = 0; i < block.Length; i++)

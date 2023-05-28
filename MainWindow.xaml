@@ -8,9 +8,15 @@
         ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Open image" HorizontalAlignment="Left" Margin="298,42,0,0" VerticalAlignment="Top" Click="GetImage"/>
+        <Button Content="Open image" HorizontalAlignment="Left" Margin="298,41,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263"/>
         <Image Name="LoadedImage" Width="250" Margin="480,-57,70,148"/>
         <Image Name="ModifiedImage" Width="250" Margin="480,113,70,-114"/>
+
+        <Label Content="Block Size:" HorizontalAlignment="Left" Margin="62,19,0,0" VerticalAlignment="Top" Height="32"/>
+        <TextBox Name="BlockSizeVal" HorizontalAlignment="Left" Margin="62,42,0,0" TextWrapping="Wrap" Text="16" VerticalAlignment="Top" Width="65"/>
+        <Button Content="Change" HorizontalAlignment="Left" Margin="132,41,0,0" VerticalAlignment="Top" Click="ChangeBlockSize"/>
+
+        <Button Content="Reroll Key" HorizontalAlignment="Left" Margin="192,41,0,0" VerticalAlignment="Top" Width="94" Click="RerollKey"/>
 
         <Label Content="ECB" HorizontalAlignment="Left" Margin="62,68,0,0" VerticalAlignment="Top" Width="89" Height="36"/>
         <Button Content="Encrypt" Name="ECB_Encrypt" HorizontalAlignment="Left" Margin="62,94,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="21" Width="89"/>

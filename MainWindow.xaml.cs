@@ -28,13 +28,14 @@ using System.Windows.Interop;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Animation;
+using System.DirectoryServices;
 
 namespace cybersecurity_encryption
 {
     public partial class MainWindow : Window
     {
         public byte[] byteArray { get; set; }
-        public byte[] cipherKey = new byte[SingleBlock.BLOCK_SIZE];
+        public byte[] cipherKey;
 
         private ECB ecb;
         private CTR ctr;
@@ -52,6 +53,7 @@ namespace cybersecurity_encryption
 
         private void generateKey()
         {
+            cipherKey = new byte[SingleBlock.BLOCK_SIZE];
             Random randGen = new Random();
             for (int i = 0; i < cipherKey.Length; i++)
             {
@@ -62,7 +64,10 @@ namespace cybersecurity_encryption
         {
             ModifiedImage.Source = myBitmapImage;
         }
-
+        public void RerollKey(object sender, RoutedEventArgs e)
+        {
+            generateKey();
+        }
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
             byte [] encryptedByteArray = ecb.Encrypt(this.cipherKey, this.byteArray);
@@ -77,7 +82,11 @@ namespace cybersecurity_encryption
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, decryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
         }
-
+        public void ChangeBlockSize(object sender, RoutedEventArgs e)
+        {
+            SingleBlock.BLOCK_SIZE = Int32.Parse(BlockSizeVal.Text);
+            generateKey();
+        }
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
         }
