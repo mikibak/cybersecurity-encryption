@@ -8,11 +8,7 @@
         ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image Name="Image" Width="300" Margin="455,-52,45,51">
-            <Image.Source>
-                <BitmapImage DecodePixelWidth="300" UriSource="C:\\A Chudy Folder\\cybersecurity-encryption\\Resources\\shrek.bmp" />
-            </Image.Source>
-        </Image>
+        <Image Name="Image" Width="300" Margin="455,-52,45,51"/>
 
         <Button Content="ECB" Name="ECB" HorizontalAlignment="Left" Margin="62,116,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="54" Width="89"/>
         <ProgressBar Name="ECBprogressBar" HorizontalAlignment="Left" Height="21" Margin="168,116,0,0" VerticalAlignment="Top" Width="201"/>
