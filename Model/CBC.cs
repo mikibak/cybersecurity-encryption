@@ -8,17 +8,17 @@ namespace cybersecurity_encryption.Model
 {
     internal class CBC : Encryption
     {
-        public CBC(byte[] key, byte[] message) : base(key, message) { }
+        public CBC(byte[] key, byte[] message, int blockSize) : base(key, message, blockSize) { }
 
-        public override byte[] Encrypt(byte[] key, byte[] message)
+        public override byte[] Encrypt()
         {
             //TODO implement CBC
-            return message;
+            return Message;
         }
-        public override byte[] Decrypt(byte[] key, byte[] message)
+        public override byte[] Decrypt()
         {
             //TODO implement CBC
-            return message;
+            return Message;
         }
     }
 }

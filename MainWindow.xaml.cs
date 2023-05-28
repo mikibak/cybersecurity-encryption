@@ -53,24 +53,6 @@ namespace cybersecurity_encryption
                 cipherKey[i] = (byte)randGen.Next(256);
             }
         }
-        private static void blockCipherDecryption(byte[] plaintext, byte[] cipherKey)
-        {
-            for (int i = 0; i < plaintext.Length; i++)
-            {
-                int tmpVal = (plaintext[i] + cipherKey[i]) % 256;
-                plaintext[i] = (byte)tmpVal;
-            }
-            Array.Reverse(plaintext);
-        }
-        private static void blockCipherEncryption(byte[] ciphertext, byte[] cipherKey)
-        {
-            Array.Reverse(ciphertext);
-            for (int i = 0; i < ciphertext.Length; i++)
-            {
-                int tmpVal = (ciphertext[i] - cipherKey[i] + 256) % 256;
-                ciphertext[i] = (byte)tmpVal;
-            }
-        }
 
         private void KeyChangedEventHandler(object sender, TextChangedEventArgs args)
         {
@@ -86,116 +68,19 @@ namespace cybersecurity_encryption
             }
         }
 
-
-        public void SetImage(string path)
-        {
-            // Create source
-            BitmapImage myBitmapImage = new BitmapImage();
-
-            // BitmapImage.UriSource must be in a BeginInit/EndInit block
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri(path);
-            // To save significant application memory, set the DecodePixelWidth or
-            // DecodePixelHeight of the BitmapImage value of the image source to the desired
-            // height or width of the rendered image. If you don't do this, the application will
-            // cache the image as though it were rendered as its normal size rather than just
-            // the size that is displayed.
-            // Note: In order to preserve aspect ratio, set DecodePixelWidth
-            // or DecodePixelHeight but not both.
-            myBitmapImage.DecodePixelWidth = (int)LoadedImage.Width;
-            myBitmapImage.EndInit();
-
-            //set image source
-            LoadedImage.Source = myBitmapImage;
-
-            Bitmap bitmap1 = new Bitmap(path);
-            var arr = BitmapToArray(bitmap1.Width, bitmap1.Height, bitmap1);
-            byteArray = arr;//przypisujemy
-        }
-        public byte[] BitmapToArray(int w, int h, Bitmap data)
-        {
-            byte[] dat = new byte[w * h * 4];
-            int iterator = 0;
-            for (int y = 0; y < h; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    //get pixel value
-                    System.Drawing.Color p = data.GetPixel(x, y);
-
-                    //extract ARGB value from p
-                    dat[iterator] = p.A;
-                    dat[iterator + 1] = p.R;
-                    dat[iterator + 2] = p.G;
-                    dat[iterator + 3] = p.B;
-                    iterator += 4;
-                }
-            }
-            return dat;
-        }
-        public Bitmap ArrayToBitmap(int w, int h, byte[] data)
-        {
-            Bitmap pic = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            int arrayIndex = 0;
-            for (int y = 0; y < h; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    System.Drawing.Color c = System.Drawing.Color.FromArgb(
-                       data[arrayIndex],
-                       data[arrayIndex + 1],
-                       data[arrayIndex + 2],
-                       data[arrayIndex + 3]
-                    );
-                    arrayIndex = arrayIndex + 4;
-                    pic.SetPixel(x, y, c);
-                }
-            }
-            return pic;
-        }
-
-        public BitmapImage BitmapToBitmapImage(Bitmap bitmap)
-        {
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            MemoryStream ms = new MemoryStream();
-            bitmap.Save(ms, ImageFormat.Bmp);
-            ms.Seek(0, SeekOrigin.Begin);
-            bi.StreamSource = ms;
-            bi.EndInit();
-            return bi;
-        }
-        private void setModifiedImage(BitmapImage myBitmapImage)
-        {
-            ModifiedImage.Source = myBitmapImage;
-        }
-
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
-            byte[] encryptedByteArray = new byte[byteArray.Length];
-            byteArray.CopyTo(encryptedByteArray, 0);
-
-            byte[] block = new byte[BLOCK_SIZE];
-            long counter = 0;
-            while (true)
+            Encryption ecb = new ECB(cipherKey, byteArray, BLOCK_SIZE);
+            byte[] encryptedByteArray;
+            if (isEncrypting)
             {
-                if (counter == byteArray.Length)
-                {
-                    break;
-                }
-                block[counter % 16] = byteArray[counter];
-                counter++;
-                if (counter % 16 == 0)
-                {
-                    if(isEncrypting) { blockCipherEncryption(block, cipherKey); }
-                    else { blockCipherDecryption(block, cipherKey); }
-                    block.CopyTo(encryptedByteArray, counter - 16);
-                }
+                encryptedByteArray = ecb.Encrypt();
+            } else
+            {
+                encryptedByteArray = ecb.Decrypt();
             }
-            encryptedByteArray.CopyTo(byteArray, 0);
-            Bitmap bitmap = ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
-            ModifiedImage.Source = BitmapToBitmapImage(bitmap);
-            setModifiedImage(BitmapToBitmapImage(bitmap));
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(480, 360, encryptedByteArray); //width and height hardcoded - TODO  - save bmp size to var for curr loaded bmp or save to some meta
+            setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             isEncrypting = !isEncrypting;
         }
 
@@ -246,18 +131,17 @@ namespace cybersecurity_encryption
 
         private void GetImage(object sender, RoutedEventArgs e)
         {
-            using (OpenFileDialog dlg = new OpenFileDialog())
+            BitmapLoader bmpl = new BitmapLoader();
+            if(bmpl.GetImage())
             {
-                dlg.Title = "Open Image";
-                dlg.Filter = "bmp files (*.bmp)|*.bmp";
-                DialogResult result = dlg.ShowDialog();
-
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    SetImage(dlg.FileName);
-
-                }
+                LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                byteArray = bmpl.GetByteArray();
             }
+        }
+
+        public void setModifiedImage(BitmapImage myBitmapImage)
+        {
+            ModifiedImage.Source = myBitmapImage;
         }
 
         //this may or may not help with getting the image

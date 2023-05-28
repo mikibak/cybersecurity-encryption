@@ -8,17 +8,17 @@ namespace cybersecurity_encryption.Model
 {
     internal class CTR : Encryption
     {
-        public CTR(byte[] key, byte[] message) : base(key, message) { }
+        public CTR(byte[] key, byte[] message, int blockSize) : base(key, message, blockSize) { }
 
-        public override byte[] Encrypt(byte[] key, byte[] message)
+        public override byte[] Encrypt()
         {
             //TODO implement CTR
-            return message;
+            return Message;
         }
-        public override byte[] Decrypt(byte[] key, byte[] message)
+        public override byte[] Decrypt()
         {
             //TODO implement CTR
-            return message;
+            return Message;
         }
     }
 }

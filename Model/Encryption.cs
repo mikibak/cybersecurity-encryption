@@ -10,12 +10,14 @@ namespace cybersecurity_encryption.Model
     {
         public byte[] Key { get; set; }
         public byte[] Message { get; set; }
-        public Encryption(byte[] key, byte[] message) {
+        public int BlockSize { get; set; }
+        public Encryption(byte[] key, byte[] message, int blockSize) {
             Key = key;
             Message = message;
+            BlockSize = blockSize;
         }
 
-        public abstract byte[] Encrypt(byte[] key, byte[] message);
-        public abstract byte[] Decrypt(byte[] key, byte[] message);
+        public abstract byte[] Encrypt();
+        public abstract byte[] Decrypt();
     }
 }
