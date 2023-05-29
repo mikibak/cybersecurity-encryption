@@ -49,8 +49,8 @@ namespace cybersecurity_encryption
         private Encryption ctr;
         private Encryption cbc;
         private HashAlgorithm hash;
-        string fileName = "shrekko";
 
+        private String path = "../../../Resources/";
         Bitmap changedImage;
         public MainWindow()
         {
@@ -59,24 +59,15 @@ namespace cybersecurity_encryption
             ecb = new ECB();
             ctr = new CTR();
             cbc = new CBC();
-            hash = SHA256.Create();
         }
 
         private void setModifiedImage(BitmapImage myBitmapImage)
         {
             ModifiedImage.Source = myBitmapImage;
-            
-        }
-        public void setKeySize128(object sender, RoutedEventArgs e)
-        {
-            hash = MD5.Create();
-        }
-        public void setKeySize256(object sender, RoutedEventArgs e)
-        {
-            hash = SHA256.Create();
         }
         public void GenerateKey(object sender, RoutedEventArgs e)
         {
+            hash = SHA256.Create();
             cipherKey = hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordVal.Text));
             ecb.setKey(cipherKey);
             cbc.setKey(cipherKey);
@@ -87,6 +78,11 @@ namespace cybersecurity_encryption
             if(byteArray == null)
             {
                 System.Windows.MessageBox.Show("Choose image to encrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
+            else if (hash == null)
+            {
+                System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
                 return 0;
             }
             Stopwatch stopwatch = new Stopwatch();
@@ -104,6 +100,11 @@ namespace cybersecurity_encryption
             if (byteArray == null)
             {
                 System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
+                return 0;
+            }
+            else if (hash == null)
+            {
+                System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
                 return 0;
             }
             Stopwatch stopwatch = new Stopwatch();
@@ -163,13 +164,13 @@ namespace cybersecurity_encryption
 
         private void SaveChangedImage_Click(object sender, RoutedEventArgs e)
         {
-            FileHanlder fileHanlder = new FileHanlder();
-            fileHanlder.SaveFile(changedImage, SavedFileName.Text, cipherKey, cbc, ctr);
+            FileHandler fileHanlder = new FileHandler();
+            fileHanlder.SaveFile(changedImage, SavedFileName.Text);
         }
 
         private void ReadyKeyFile_Click(object sender, RoutedEventArgs e)
         {
-            FileHanlder fileHanlder = new FileHanlder();
+            FileHandler fileHanlder = new FileHandler();
             var result = fileHanlder.ReadKeyFromFile(cbc, ctr);
             if (result != null)
             {

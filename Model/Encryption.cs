@@ -9,26 +9,16 @@ namespace cybersecurity_encryption.Model
 {
     public abstract class Encryption
     {
-        public byte[] Key { get; set; }
         public byte[] Message { get; set; }
-        public byte[] IV { get; set; }
 
         protected Aes aes;
-        public void setKey(byte[] key)
+        public virtual void setKey(byte[] key)
         {
             aes.Key = key;
         }
         public byte[] getKey()
         {
             return aes.Key;
-        }
-        public void setIV(byte[] key)
-        {
-            aes.IV = key;
-        }
-        public byte[] getIV()
-        {
-            return aes.IV;
         }
         public Encryption() {
         }
@@ -51,11 +41,11 @@ namespace cybersecurity_encryption.Model
         }
         public byte[] Decrypt(byte[] ciphertext)
         {
-            using (var encryptor = aes.CreateDecryptor())
+            using (var decryptor = aes.CreateDecryptor())
             {
                 using (var ms = new System.IO.MemoryStream())
                 {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
                     {
                         cs.Write(ciphertext, 0, ciphertext.Length);
                         cs.FlushFinalBlock();

@@ -13,6 +13,15 @@ namespace cybersecurity_encryption.Model
         {
             aes = Aes.Create();
             //aes.Mode = CipherMode.;
+            aes.Padding = PaddingMode.None;
+        }
+        public override void setKey(byte[] key)
+        {
+            aes.Key = key;
+            using (MD5 hash = MD5.Create())
+            {
+                aes.IV = hash.ComputeHash(key);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace cybersecurity_encryption.Model
 {
-    public class FileHanlder
+    public class FileHandler
     {
         public Tuple<byte[], Encryption, Encryption> ReadKeyFromFile(Encryption cbc, Encryption ctr)
         {
@@ -31,11 +31,11 @@ namespace cybersecurity_encryption.Model
                         {
                             if (iter < lineCount / 3)
                                 cipherKey_temp[iter] = byte.Parse(s);
-                            else if (iter >= lineCount / 3 && iter < (lineCount / 3 * 2))
-                                cbc.IV[iter - lineCount / 3] = byte.Parse(s);
+                           /* else if (iter >= lineCount / 3 && iter < (lineCount / 3 * 2)) 
+                            cbc.IV[iter - lineCount / 3] = byte.Parse(s);
                             else
-                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);
-                            iter++;
+                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);*/
+                                iter++;
                         }
                         return Tuple.Create(cipherKey_temp,cbc,ctr);
                     }
@@ -43,22 +43,18 @@ namespace cybersecurity_encryption.Model
                 return null;
             }
         }
-        public void SaveFile(Bitmap changedImage,string name, byte[] cipherKey,Encryption cbc,Encryption ctr)
+        public void SaveFile(Bitmap changedImage,string name)
         {
             if (changedImage != null && !String.Equals(name, ""))
             {
                 //string path = Directory.GetCurrentDirectory();
                 changedImage.Save(("../../../Resources/" + name + ".bmp"));
-                string path = @"../../../Resources/" + name + ".txt";
+                /*string path = @"../../../Resources/" + name + ".txt";
                 using (StreamWriter sw = File.CreateText(path))
                 {
-                    foreach (byte b in cipherKey)
+                    foreach (byte b in BitmapLoader.BitmapToArray(changedImage.Width, changedImage.Height, changedImage))
                         sw.WriteLine(b);
-                    foreach (byte b in cbc.IV)
-                        sw.WriteLine(b);
-                    foreach (byte b in ctr.IV)
-                        sw.WriteLine(b);
-                }
+                }*/
             }
         }
     }
