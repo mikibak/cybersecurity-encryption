@@ -88,7 +88,7 @@ namespace cybersecurity_encryption
             }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            byteArray = encryption.Encrypt(this.cipherKey, this.byteArray);
+            byteArray = encryption.Encrypt(this.byteArray);
             stopwatch.Stop();
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
             changedImage = bitmap;
@@ -105,7 +105,7 @@ namespace cybersecurity_encryption
             }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            byteArray = encryption.Decrypt(this.cipherKey, this.byteArray);
+            byteArray = encryption.Decrypt(this.byteArray);
             stopwatch.Stop();
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
             changedImage = bitmap;
