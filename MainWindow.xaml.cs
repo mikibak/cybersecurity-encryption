@@ -32,6 +32,8 @@ using System.DirectoryServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Drawing.Design;
+using System.Security.Cryptography;
+using System.Security.Policy;
 
 namespace cybersecurity_encryption
 {
@@ -46,7 +48,9 @@ namespace cybersecurity_encryption
         private Encryption ecb;
         private Encryption ctr;
         private Encryption cbc;
+        private HashAlgorithm hash;
         string fileName = "shrekko";
+
         Bitmap changedImage;
         public MainWindow()
         {
@@ -55,17 +59,7 @@ namespace cybersecurity_encryption
             ecb = new ECB();
             ctr = new CTR();
             cbc = new CBC();
-            generateKey();
-        }
-
-        private void generateKey()
-        {
-            cipherKey = new byte[SingleBlock.BLOCK_SIZE];
-            Random randGen = new Random();
-            for (int i = 0; i < cipherKey.Length; i++)
-            {
-                cipherKey[i] = (byte)randGen.Next(256);
-            }
+            hash = SHA256.Create();
         }
 
         private void setModifiedImage(BitmapImage myBitmapImage)
@@ -73,12 +67,21 @@ namespace cybersecurity_encryption
             ModifiedImage.Source = myBitmapImage;
             
         }
-        
-        public void RerollKey(object sender, RoutedEventArgs e)
+        public void setKeySize128(object sender, RoutedEventArgs e)
         {
-            generateKey();
+            hash = MD5.Create();
         }
-
+        public void setKeySize256(object sender, RoutedEventArgs e)
+        {
+            hash = SHA256.Create();
+        }
+        public void GenerateKey(object sender, RoutedEventArgs e)
+        {
+            cipherKey = hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordVal.Text));
+            ecb.setKey(cipherKey);
+            cbc.setKey(cipherKey);
+            ctr.setKey(cipherKey);
+        }
         private long Encrypt(Encryption encryption)
         {
             if(byteArray == null)
@@ -111,14 +114,6 @@ namespace cybersecurity_encryption
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
-        }
-
-        public void ChangeBlockSize(object sender, RoutedEventArgs e)
-        {
-            SingleBlock.BLOCK_SIZE = Int32.Parse(BlockSizeVal.Text);
-            cbc.GenerateIV();
-            ctr.GenerateIV();
-            generateKey();
         }
 
         public void EncryptECB(object sender, RoutedEventArgs e)
