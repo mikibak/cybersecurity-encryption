@@ -15,6 +15,10 @@ namespace cybersecurity_encryption.Model
         public virtual void setKey(byte[] key)
         {
             aes.Key = key;
+            using (MD5 hash = MD5.Create())
+            {
+                aes.IV = hash.ComputeHash(key);
+            }
         }
         public byte[] getKey()
         {
@@ -23,7 +27,7 @@ namespace cybersecurity_encryption.Model
         public Encryption() {
         }
         virtual public void GenerateIV() { }
-        public byte[] Encrypt(byte[] plaintext)
+        public virtual byte[] Encrypt(byte[] plaintext)
         {
             using (var encryptor = aes.CreateEncryptor())
             {
@@ -39,7 +43,7 @@ namespace cybersecurity_encryption.Model
                 }
             }
         }
-        public byte[] Decrypt(byte[] ciphertext)
+        public virtual byte[] Decrypt(byte[] ciphertext)
         {
             using (var decryptor = aes.CreateDecryptor())
             {

@@ -20,7 +20,6 @@ namespace cybersecurity_encryption.Model
         {
             aes = Aes.Create();
             aes.Mode = CipherMode.ECB;
-            aes.Padding = PaddingMode.None;
         }
     }
 }

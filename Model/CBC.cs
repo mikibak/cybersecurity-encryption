@@ -12,15 +12,6 @@ namespace cybersecurity_encryption.Model
         public CBC() {
             aes = Aes.Create();
             aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.None;
-        }
-        public override void setKey(byte[] key)
-        {
-            aes.Key = key;
-            using(MD5 hash = MD5.Create())
-            {
-                aes.IV = hash.ComputeHash(key);
-            }
         }
     }
 }
