@@ -40,7 +40,8 @@ namespace cybersecurity_encryption
 {
     public partial class MainWindow : Window
     {
-        public byte[] byteArray { get; set; }
+        public byte[] byteArrayFromFile { get; set; }
+        public byte[] byteArrayModified { get; set; }
         public byte[] cipherKey;
 
         private int ImageWidth;
@@ -51,7 +52,6 @@ namespace cybersecurity_encryption
         private Encryption cbc;
         private HashAlgorithm hash;
 
-        private String path = "../../../Resources/";
         Bitmap changedImage;
         public MainWindow()
         {
@@ -76,7 +76,7 @@ namespace cybersecurity_encryption
         }
         private long Encrypt(Encryption encryption)
         {
-            if(byteArray == null)
+            if(byteArrayFromFile == null)
             {
                 System.Windows.MessageBox.Show("Choose image to encrypt", "No image detected", MessageBoxButton.OK);
                 return 0;
@@ -88,9 +88,22 @@ namespace cybersecurity_encryption
             }
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            byteArray = encryption.Encrypt(this.byteArray);
+            byteArrayModified = encryption.Encrypt(byteArrayFromFile);
+
+            byte[] temp = new byte[ImageHeight * (ImageWidth + 1) * 4];
             stopwatch.Stop();
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+            for(int i = 0; i < byteArrayModified.Length; i++)
+            {
+                temp[i] = byteArrayModified[i];
+            }
+            for (int i = byteArrayModified.Length; i < ImageHeight * (ImageWidth + 1) * 4; i++)
+            {
+                temp[i] = 0;
+            }
+            byteArrayModified = temp;
+
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth + 1, ImageHeight, byteArrayModified);
+            ImageWidth = ImageWidth + 1;
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
@@ -100,7 +113,7 @@ namespace cybersecurity_encryption
         {
             try
             {
-                if (byteArray == null)
+                if (byteArrayFromFile == null)
                 {
                     System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
                     return 0;
@@ -112,9 +125,10 @@ namespace cybersecurity_encryption
                 }
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                byteArray = encryption.Decrypt(this.byteArray);
+                byteArrayModified = encryption.Decrypt(byteArrayFromFile);
+                int lengthDecrease = byteArrayFromFile.Length - byteArrayModified.Length;
                 stopwatch.Stop();
-                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth * ImageHeight/4 - lengthDecrease, 4, byteArrayModified);
                 changedImage = bitmap;
                 setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
                 return stopwatch.ElapsedMilliseconds;
@@ -165,7 +179,7 @@ namespace cybersecurity_encryption
             if (bmpl.GetImage())
             {
                 LoadedImage.Source = bmpl.SetImage(LoadedImage);
-                byteArray = bmpl.GetByteArray();
+                byteArrayFromFile = bmpl.GetByteArray();
                 ImageWidth = bmpl.GetWidth();
                 ImageHeight = bmpl.GetHeight();
             }
