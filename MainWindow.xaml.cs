@@ -42,6 +42,7 @@ namespace cybersecurity_encryption
     {
         public byte[] byteArrayFromFile { get; set; }
         public byte[] byteArrayModified { get; set; }
+        public byte[] debugArray { get; set; }
         public byte[] cipherKey;
 
         private int ImageWidth;
@@ -89,21 +90,23 @@ namespace cybersecurity_encryption
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             byteArrayModified = encryption.Encrypt(byteArrayFromFile);
+            byte[] dupa = byteArrayModified;
+            debugArray = dupa;
 
-            byte[] temp = new byte[ImageHeight * (ImageWidth + 1) * 4];
+            byte[] temp = new byte[(ImageHeight + 1) * ImageWidth * 4];
             stopwatch.Stop();
             for(int i = 0; i < byteArrayModified.Length; i++)
             {
                 temp[i] = byteArrayModified[i];
             }
-            for (int i = byteArrayModified.Length; i < ImageHeight * (ImageWidth + 1) * 4; i++)
+            for (int i = byteArrayModified.Length; i < (ImageHeight + 1) * ImageWidth * 4; i++)
             {
-                temp[i] = 0;
+                temp[i] = 255;
             }
             byteArrayModified = temp;
 
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth + 1, ImageHeight, byteArrayModified);
-            ImageWidth = ImageWidth + 1;
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight + 1, byteArrayModified);
+            ImageHeight = ImageHeight + 1;
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             return stopwatch.ElapsedMilliseconds;
@@ -123,19 +126,40 @@ namespace cybersecurity_encryption
                     System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
                     return 0;
                 }
+
+                //remove padding
+                int nOfZeros = 0;
+                for(int i = byteArrayFromFile.Length - 1; i >= 0; i--)
+                {
+                    if (byteArrayFromFile[i] == 255)
+                    {
+                        nOfZeros++;
+                    }
+                    else break;
+                }
+
+                byte[] temp = new byte[byteArrayFromFile.Length - nOfZeros];
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    temp[i] = byteArrayFromFile[i];
+                }
+                
+                byteArrayFromFile = temp;
+
+                byte[] dupa = debugArray;
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                byteArrayModified = encryption.Decrypt(byteArrayFromFile);
-                int lengthDecrease = byteArrayFromFile.Length - byteArrayModified.Length;
+                byteArrayModified = encryption.Decrypt(temp);
                 stopwatch.Stop();
-                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth * ImageHeight/4 - lengthDecrease, 4, byteArrayModified);
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight - 1, byteArrayModified);
+                ImageHeight = ImageHeight - 1;
                 changedImage = bitmap;
                 setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
                 return stopwatch.ElapsedMilliseconds;
             }
             catch (InvalidCipherTextException ex)
             {
-                System.Windows.MessageBox.Show("Decryption Error", "Invalid Ciphertext", MessageBoxButton.OK);
+                System.Windows.MessageBox.Show("Decryption Error" + ex, "Invalid Ciphertext", MessageBoxButton.OK);
                 return -1;
             }
         }
