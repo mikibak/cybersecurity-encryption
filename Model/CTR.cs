@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Paddings;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -12,54 +18,22 @@ namespace cybersecurity_encryption.Model
     {
         public CTR()
         {
-            aes = Aes.Create();
-            aes.Mode = CipherMode.ECB;
-        }
-        byte[] EncryptBlock(byte[] block, byte[] key, byte[] iv)
-        {
-            ICryptoTransform encryptor = aes.CreateEncryptor();
-            byte[] encryptedBlock = new byte[block.Length];
-            encryptor.TransformBlock(block, 0, block.Length, encryptedBlock, 0);
-            return encryptedBlock;
-        }
-        byte[] GenerateCounter(byte[] iv, int blockIndex)
-        {
-            byte[] counter = new byte[iv.Length];
-            Buffer.BlockCopy(iv, 0, counter, 0, iv.Length);
-
-            byte[] indexBytes = BitConverter.GetBytes(blockIndex);
-            Array.Reverse(indexBytes); // Revert the bytes to maintain big-endian order
-
-            for (int i = 0; i < indexBytes.Length; i++)
-            {
-                counter[counter.Length - 1 - i] ^= indexBytes[i];
-            }
-
-            return counter;
         }
         public override byte[] Encrypt(byte[] plaintext)
         {
-            byte[] encryptedData = new byte[plaintext.Length];
-            int BLOCK_SIZE = aes.IV.Length;
-            for (int i = 0; i < plaintext.Length; i += BLOCK_SIZE)
-            {
-                byte[] block = new byte[BLOCK_SIZE];
-                Buffer.BlockCopy(plaintext, i, block, 0, BLOCK_SIZE);
+            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/PKCS7Padding");
 
-                byte[] counter = GenerateCounter(aes.IV, i / BLOCK_SIZE);
-                byte[] encryptedBlock = EncryptBlock(counter, aes.Key, aes.IV);
+            cipher.Init(true, new ParametersWithIV(new KeyParameter(key), this.IV));
 
-                for (int j = 0; j < BLOCK_SIZE; j++)
-                {
-                    encryptedData[i + j] = (byte)(block[j] ^ encryptedBlock[j]);
-                }
-            }
-
-            return encryptedData;
+            return cipher.DoFinal(plaintext);
         }
         public override byte[] Decrypt(byte[] ciphertext)
         {
-            return Encrypt(ciphertext);
+            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/PKCS7Padding");
+
+            cipher.Init(false, new ParametersWithIV(new KeyParameter(key), this.IV));
+
+            return cipher.DoFinal(ciphertext);
         }
     }
 }

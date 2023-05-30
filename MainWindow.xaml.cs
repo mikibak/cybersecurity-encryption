@@ -34,6 +34,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Drawing.Design;
 using System.Security.Cryptography;
 using System.Security.Policy;
+using Org.BouncyCastle.Crypto;
 
 namespace cybersecurity_encryption
 {
@@ -67,7 +68,7 @@ namespace cybersecurity_encryption
         }
         public void GenerateKey(object sender, RoutedEventArgs e)
         {
-            hash = SHA256.Create();
+            hash = MD5.Create();
             cipherKey = hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordVal.Text));
             ecb.setKey(cipherKey);
             cbc.setKey(cipherKey);
@@ -97,24 +98,32 @@ namespace cybersecurity_encryption
 
         private long Decrypt(Encryption encryption)
         {
-            if (byteArray == null)
+            try
             {
-                System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
-                return 0;
+                if (byteArray == null)
+                {
+                    System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
+                    return 0;
+                }
+                else if (hash == null)
+                {
+                    System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
+                    return 0;
+                }
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                byteArray = encryption.Decrypt(this.byteArray);
+                stopwatch.Stop();
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
+                changedImage = bitmap;
+                setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+                return stopwatch.ElapsedMilliseconds;
             }
-            else if (hash == null)
+            catch (InvalidCipherTextException ex)
             {
-                System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
-                return 0;
+                System.Windows.MessageBox.Show("Decryption Error", "Invalid Ciphertext", MessageBoxButton.OK);
+                return -1;
             }
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            byteArray = encryption.Decrypt(this.byteArray);
-            stopwatch.Stop();
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArray);
-            changedImage = bitmap;
-            setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
-            return stopwatch.ElapsedMilliseconds;
         }
 
         public void EncryptECB(object sender, RoutedEventArgs e)
