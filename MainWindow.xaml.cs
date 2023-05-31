@@ -87,23 +87,12 @@ namespace cybersecurity_encryption
                 System.Windows.MessageBox.Show("Enter password for key generation", "No key generated", MessageBoxButton.OK);
                 return 0;
             }
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             byteArrayModified = encryption.Encrypt(byteArrayFromFile);
-            byte[] dupa = byteArrayModified;
-            debugArray = dupa;
 
-            byte[] temp = new byte[(ImageHeight + 1) * ImageWidth * 4];
-            stopwatch.Stop();
-            for(int i = 0; i < byteArrayModified.Length; i++)
-            {
-                temp[i] = byteArrayModified[i];
-            }
-            for (int i = byteArrayModified.Length; i < (ImageHeight + 1) * ImageWidth * 4; i++)
-            {
-                temp[i] = 255;
-            }
-            byteArrayModified = temp;
+            byteArrayModified = BitmapPadding.AddBitmapPadding(byteArrayModified, ImageWidth, ImageHeight);
 
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight + 1, byteArrayModified);
             ImageHeight = ImageHeight + 1;
@@ -128,28 +117,11 @@ namespace cybersecurity_encryption
                 }
 
                 //remove padding
-                int nOfZeros = 0;
-                for(int i = byteArrayFromFile.Length - 1; i >= 0; i--)
-                {
-                    if (byteArrayFromFile[i] == 255)
-                    {
-                        nOfZeros++;
-                    }
-                    else break;
-                }
-
-                byte[] temp = new byte[byteArrayFromFile.Length - nOfZeros];
-                for (int i = 0; i < temp.Length; i++)
-                {
-                    temp[i] = byteArrayFromFile[i];
-                }
+                byteArrayFromFile = BitmapPadding.StripBitmapPadding(byteArrayFromFile);
                 
-                byteArrayFromFile = temp;
-
-                byte[] dupa = debugArray;
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                byteArrayModified = encryption.Decrypt(temp);
+                byteArrayModified = encryption.Decrypt(byteArrayFromFile);
                 stopwatch.Stop();
                 Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight - 1, byteArrayModified);
                 ImageHeight = ImageHeight - 1;
