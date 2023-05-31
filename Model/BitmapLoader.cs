@@ -89,7 +89,7 @@ namespace cybersecurity_encryption.Model
         }
         public static Bitmap ArrayToBitmap(int w, int h, byte[] data)
         {
-            Bitmap pic = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            Bitmap pic = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             int arrayIndex = 0;
             for (int y = 0; y < h; y++)
             {
