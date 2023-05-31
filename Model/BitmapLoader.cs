@@ -112,10 +112,15 @@ namespace cybersecurity_encryption.Model
         {
             BitmapImage bi = new BitmapImage();
             bi.BeginInit();
+
+            // Save the Bitmap to a MemoryStream using PNG format
             MemoryStream ms = new MemoryStream();
-            bitmap.Save(ms, ImageFormat.Bmp);
+            bitmap.Save(ms, ImageFormat.Png);
             ms.Seek(0, SeekOrigin.Begin);
+
+            // Use the MemoryStream as the source for the BitmapImage
             bi.StreamSource = ms;
+
             bi.EndInit();
             return bi;
         }
