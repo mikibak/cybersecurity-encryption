@@ -69,6 +69,14 @@ namespace cybersecurity_encryption
             ImageHeight = ImageHeight + 1;
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
+
+            //NEW CODE - PURELY FOR TEST PURPOSES
+            EncryptedFile file = new EncryptedFile(cipherKey, byteArrayModified, 3);
+            file.SaveToFile("example");
+            file = null;
+            file = EncryptedFile.ReadFromFile("example");
+
+
             return stopwatch.ElapsedMilliseconds;
         }
 
