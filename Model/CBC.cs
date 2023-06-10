@@ -11,6 +11,7 @@ namespace cybersecurity_encryption.Model
         }
         public override byte[] Encrypt(byte[] plaintext)
         {
+            GenerateInitializationVector();
             //System.Windows.MessageBox.Show("Length", plaintext.Length.ToString(), MessageBoxButton.OK);
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CBC/PKCS7Padding");
 

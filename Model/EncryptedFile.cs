@@ -13,6 +13,8 @@ namespace cybersecurity_encryption.Model
     public class EncryptedFile
     {
         [XmlElement]
+        public string EncryptionType{ get; set; }
+        [XmlElement]
         public byte[] IV{ get; set; }
         [XmlElement]
         public byte[] Content { get; set; }

@@ -11,6 +11,7 @@ namespace cybersecurity_encryption.Model
         }
         public override byte[] Encrypt(byte[] plaintext)
         {
+            GenerateInitializationVector();
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/PKCS7Padding");
 
             cipher.Init(true, new ParametersWithIV(new KeyParameter(key), this.IV));
