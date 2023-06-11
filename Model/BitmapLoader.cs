@@ -30,7 +30,28 @@ namespace cybersecurity_encryption.Model
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Title = "Open Image";
-                dlg.Filter = "files to encrypt (*.bmp)|*.bmp|files to decrypt (*.xml)|*.xml";
+                dlg.Filter = "files to encrypt (*.bmp)|*.bmp";
+                DialogResult result = dlg.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    FileName = dlg.FileName;
+                    FileEncrypted = FileName.Contains(".xml");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool GetEncryptedFile()
+        {
+            using (OpenFileDialog dlg = new OpenFileDialog())
+            {
+                dlg.Title = "Open Image";
+                dlg.Filter = "files to decrypt (*.xml)|*.xml";
                 DialogResult result = dlg.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK)

@@ -189,6 +189,18 @@ namespace cybersecurity_encryption
             }
         }
 
+        private void GetEncryptedFile(object sender, RoutedEventArgs e)
+        {
+            BitmapLoader bmpl = new BitmapLoader();
+            if (bmpl.GetEncryptedFile())
+            {
+                LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                byteArrayFromFile = bmpl.GetByteArray();
+                ImageWidth = bmpl.GetWidth();
+                ImageHeight = bmpl.GetHeight();
+            }
+        }
+
         private void SaveChangedImage_Click(object sender, RoutedEventArgs e)
         {
             if (encryptedFile != null)
