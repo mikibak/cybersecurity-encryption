@@ -8,8 +8,14 @@
         ResizeMode="NoResize"
         Title="MainWindow" Height="500" Width="800">
     <Grid Margin="0,0,0,-6">
-        <Button Content="Open image" HorizontalAlignment="Left" Margin="63,27,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
-        <Button Content="Open encrypted file" HorizontalAlignment="Left" Margin="166,27,0,0" VerticalAlignment="Top" Click="GetEncryptedFile" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
+        <StackPanel Background="DarkOliveGreen" Margin="58,10,436,378">
+        </StackPanel>
+        <StackPanel Background="CornflowerBlue" Margin="58,208,436,10">
+        </StackPanel>
+        <StackPanel Background="Goldenrod" Margin="58,105,436,272">
+        </StackPanel>
+        <Button Content="Open image" HorizontalAlignment="Left" Margin="102,21,0,0" VerticalAlignment="Top" Click="GetImage" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
+        <Button Content="Open encrypted file" HorizontalAlignment="Left" Margin="199,21,0,0" VerticalAlignment="Top" Click="GetEncryptedFile" RenderTransformOrigin="0.529,0.263" Height="27" Width="89"/>
         <Image Name="LoadedImage" Width="250" Margin="418,-80,132,170">
             <Image.Source>
                 <BitmapImage DecodePixelWidth="250" UriSource="Resources\\test.bmp" />
@@ -20,29 +26,29 @@
                 <BitmapImage DecodePixelWidth="250" UriSource="Resources\\test.bmp" />
             </Image.Source>
         </Image>
-        <Button Content="Save" IsEnabled="False" HorizontalAlignment="Left" Margin="291,59,0,0" VerticalAlignment="Top" Name="Save" Click="SaveChangedImage_Click" RenderTransformOrigin="0.593,1.355" Width="59" Height="21"/>
-        <TextBox HorizontalAlignment="Left" Margin="166,59,0,0" TextWrapping="Wrap" Text="FileName to save" VerticalAlignment="Top" Width="116" Name="SavedFileName" Height="21"/>
+        <Button Content="Save" IsEnabled="False" HorizontalAlignment="Left" Margin="229,59,0,0" VerticalAlignment="Top" Name="Save" Click="SaveChangedImage_Click" RenderTransformOrigin="0.593,1.355" Width="59" Height="21"/>
+        <TextBox HorizontalAlignment="Left" Margin="106,59,0,0" TextWrapping="Wrap" Text="FileName to save" VerticalAlignment="Top" Width="116" Name="SavedFileName" Height="21"/>
 
-        <Label Content="ECB" HorizontalAlignment="Left" Margin="62,68,0,0" VerticalAlignment="Top" Width="89" Height="36" FontWeight="Bold"/>
-        <Button Content="Encrypt" IsEnabled="False" Name="ECB_Encrypt" HorizontalAlignment="Left" Margin="62,94,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="21" Width="89"/>
-        <TextBox Name="ECB_Timer" HorizontalAlignment="Left" Margin="166,94,0,0" TextWrapping="Wrap" Text="ECB Time: XX:XX" VerticalAlignment="Top" Width="120" Height="32"/>
+        <Label Content="ECB" HorizontalAlignment="Left" Margin="62,208,0,0" VerticalAlignment="Top" Width="89" Height="36" FontWeight="Bold"/>
+        <Button Content="Encrypt" IsEnabled="False" Name="ECB_Encrypt" HorizontalAlignment="Left" Margin="62,244,0,0" VerticalAlignment="Top"  Click="EncryptECB" Height="21" Width="89"/>
+        <TextBox Name="ECB_Timer" HorizontalAlignment="Left" Margin="168,233,0,0" TextWrapping="Wrap" Text="ECB Time: XX:XX" VerticalAlignment="Top" Width="120" Height="32"/>
 
-        <Label Content="CBC" HorizontalAlignment="Left" Margin="62,133,0,0" VerticalAlignment="Top" Width="90" Height="36" FontWeight="Bold"/>
-        <Button Content="Encrypt" IsEnabled="False" Name="CBC_Encrypt" HorizontalAlignment="Left" Margin="62,158,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="21" Width="90"/>
-        <TextBox Name="CBC_Timer" HorizontalAlignment="Left" Margin="168,158,0,0" TextWrapping="Wrap" Text="CBC Time: XX:XX" VerticalAlignment="Top" Width="120" Height="30" RenderTransformOrigin="0.487,0.038"/>
+        <Label Content="CBC" HorizontalAlignment="Left" Margin="62,270,0,0" VerticalAlignment="Top" Width="90" Height="36" FontWeight="Bold"/>
+        <Button Content="Encrypt" IsEnabled="False" Name="CBC_Encrypt" HorizontalAlignment="Left" Margin="58,306,0,0" VerticalAlignment="Top"  Click="EncryptCBC" Height="21" Width="90"/>
+        <TextBox Name="CBC_Timer" HorizontalAlignment="Left" Margin="168,297,0,0" TextWrapping="Wrap" Text="CBC Time: XX:XX" VerticalAlignment="Top" Width="120" Height="30" RenderTransformOrigin="0.487,0.038"/>
 
-        <Label Content="CTR" HorizontalAlignment="Left" Margin="62,205,0,0" VerticalAlignment="Top" Width="89" Height="36" FontWeight="Bold"/>
-        <Button Content="Encrypt" IsEnabled="False" Name="CTR_Encrypt" HorizontalAlignment="Left" Margin="62,231,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="20" Width="89"/>
-        <TextBox Name="CTR_Timer" HorizontalAlignment="Left" Margin="166,0,0,0" TextWrapping="Wrap" Text="CTR Time: XX:XX" VerticalAlignment="Center" Width="120" Height="29" RenderTransformOrigin="0.477,0.157"/>
+        <Label Content="CTR" HorizontalAlignment="Left" Margin="62,332,0,0" VerticalAlignment="Top" Width="89" Height="36" FontWeight="Bold"/>
+        <Button Content="Encrypt" IsEnabled="False" Name="CTR_Encrypt" HorizontalAlignment="Left" Margin="58,368,0,0" VerticalAlignment="Top"  Click="EncryptCTR" Height="20" Width="89"/>
+        <TextBox Name="CTR_Timer" HorizontalAlignment="Left" Margin="166,359,0,0" TextWrapping="Wrap" Text="CTR Time: XX:XX" VerticalAlignment="Top" Width="120" Height="29" RenderTransformOrigin="0.477,0.157"/>
 
-        <Button Content="Decrypt" IsEnabled="False" Name="Decrypt_Bttn" HorizontalAlignment="Left" Margin="58,290,0,0" VerticalAlignment="Top"  Click="Decrypt" Height="32" Width="118"/>
+        <Button Content="Decrypt" IsEnabled="False" Name="Decrypt_Bttn" HorizontalAlignment="Left" Margin="58,416,0,0" VerticalAlignment="Top"  Click="Decrypt" Height="32" Width="118"/>
 
-        <Label Content="Set Key:" HorizontalAlignment="Left" Margin="58,347,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <Label Content="Password:" HorizontalAlignment="Left" Margin="60,370,0,0" VerticalAlignment="Top" Height="32" RenderTransformOrigin="0.483,9.586"/>
-        <TextBox Name="PasswordVisible" HorizontalAlignment="Left" Margin="127,375,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99"/>
-        <PasswordBox Name="PasswordInvisible" HorizontalAlignment="Left" Margin="127,375,0,0" VerticalAlignment="Top" Width="99"/>
-        <Button Content="Generate Key" Click="GenerateKey" HorizontalAlignment="Left" Margin="60,398,0,0" VerticalAlignment="Top" Width="84"/>
-        <CheckBox Unchecked="HidePassword" Checked="ShowPassword" Content="Show Password" HorizontalAlignment="Left" Margin="231,376,0,0" VerticalAlignment="Top"/>
+        <Label Content="Set Key:" HorizontalAlignment="Left" Margin="58,107,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Content="Password:" HorizontalAlignment="Left" Margin="55,133,0,0" VerticalAlignment="Top" Height="32" RenderTransformOrigin="0.483,9.586"/>
+        <TextBox Name="PasswordVisible" HorizontalAlignment="Left" Margin="127,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99" RenderTransformOrigin="0.626,2.268"/>
+        <PasswordBox Name="PasswordInvisible" HorizontalAlignment="Left" Margin="129,140,0,0" VerticalAlignment="Top" Width="99"/>
+        <Button Content="Generate Key" Click="GenerateKey" HorizontalAlignment="Left" Margin="58,168,0,0" VerticalAlignment="Top" Width="84"/>
+        <CheckBox Unchecked="HidePassword" Checked="ShowPassword" Content="Show Password" HorizontalAlignment="Left" Margin="244,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.393,1.731"/>
 
     </Grid>
 </Window>
