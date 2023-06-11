@@ -11,7 +11,8 @@ namespace cybersecurity_encryption.Model
     public class BitmapLoader
     {
         private string FileName = "";
-        private bool FileEncrypted = false;
+        public EncryptedFile encrypted;
+        public bool FileEncrypted = false;
         Bitmap? bitmap;
 
         public int GetHeight()
@@ -30,7 +31,7 @@ namespace cybersecurity_encryption.Model
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Title = "Open Image";
-                dlg.Filter = "files to encrypt (*.bmp)|*.bmp|files to decrypt (*.xml)|*.xml";
+                dlg.Filter = "choose (*.bmp, *.xml)|*.bmp;*.xml";
                 DialogResult result = dlg.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK)
@@ -49,16 +50,26 @@ namespace cybersecurity_encryption.Model
         public BitmapImage SetImage(System.Windows.Controls.Image loadedImage)
         {
             // Create source
-            BitmapImage myBitmapImage = new BitmapImage();
+            if (FileEncrypted)
+            {
+                string tempFileName = Path.GetFileNameWithoutExtension(FileName);
+                encrypted = EncryptedFile.ReadFromFile(tempFileName);
+                Bitmap btmap = ArrayToBitmap(encrypted.Width, encrypted.Height, encrypted.Content);
+                return BitmapToBitmapImage(btmap);
+            }
+            else
+            {
+                BitmapImage myBitmapImage = new BitmapImage();
 
-            // BitmapImage.UriSource must be in a BeginInit/EndInit block
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri(FileName);
-            myBitmapImage.DecodePixelWidth = (int)loadedImage.Width;
-            myBitmapImage.EndInit();
-
+                // BitmapImage.UriSource must be in a BeginInit/EndInit block
+                myBitmapImage.BeginInit();
+                myBitmapImage.UriSource = new Uri(FileName);
+                myBitmapImage.DecodePixelWidth = (int)loadedImage.Width;
+                myBitmapImage.EndInit();
+                return myBitmapImage;
+            }
             //set image source
-            return myBitmapImage;
+            
         }
 
         public byte[] GetByteArray()

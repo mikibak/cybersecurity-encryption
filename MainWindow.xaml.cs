@@ -76,7 +76,8 @@ namespace cybersecurity_encryption
 
             encryptedFile.PaddingLen = byteArrayModified.Length - byteArrayFromFile.Length;
             encryptedFile.Content = byteArrayModified;
-
+            encryptedFile.Width = ImageWidth;
+            encryptedFile.Height = ImageHeight;
             byteArrayModified = BitmapPadding.AddBitmapPadding(byteArrayModified, ImageWidth, ImageHeight);
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight + 1, byteArrayModified);
             ImageHeight = ImageHeight + 1;
@@ -109,7 +110,7 @@ namespace cybersecurity_encryption
                 stopwatch.Start();
                 byteArrayModified = encryption.Decrypt(fileToDecrypt);
                 stopwatch.Stop();
-
+                ImageWidth = fileToDecrypt.Width; ImageHeight=fileToDecrypt.Height;
                 Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight - 1, byteArrayModified);
                 ImageHeight = ImageHeight - 1;
                 changedImage = bitmap;
@@ -183,9 +184,19 @@ namespace cybersecurity_encryption
             if (bmpl.GetImage())
             {
                 LoadedImage.Source = bmpl.SetImage(LoadedImage);
-                byteArrayFromFile = bmpl.GetByteArray();
-                ImageWidth = bmpl.GetWidth();
-                ImageHeight = bmpl.GetHeight();
+                if (bmpl.FileEncrypted)
+                {
+                    fileToDecrypt = bmpl.encrypted;
+                    byteArrayFromFile = bmpl.encrypted.Content;
+                    ImageWidth = bmpl.GetWidth();
+                    ImageHeight = bmpl.GetHeight();
+                }
+                else
+                {
+                    byteArrayFromFile = bmpl.GetByteArray();
+                    ImageWidth = bmpl.GetWidth();
+                    ImageHeight = bmpl.GetHeight();
+                }
             }
         }
 

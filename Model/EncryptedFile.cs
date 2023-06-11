@@ -19,6 +19,10 @@ namespace cybersecurity_encryption.Model
         [XmlElement]
         public string PaddingMode { get; set; }
         [XmlElement]
+        public int Height { get; set; }
+        [XmlElement]
+        public int Width { get; set; }
+        [XmlElement]
         public byte[] IV{ get; set; }
         [XmlElement]
         public byte[] Content { get; set; }
