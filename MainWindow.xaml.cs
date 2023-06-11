@@ -184,19 +184,32 @@ namespace cybersecurity_encryption
             if (bmpl.GetImage())
             {
                 LoadedImage.Source = bmpl.SetImage(LoadedImage);
-                if (bmpl.FileEncrypted)
-                {
-                    fileToDecrypt = bmpl.encrypted;
-                    byteArrayFromFile = bmpl.encrypted.Content;
-                    ImageWidth = bmpl.GetWidth();
-                    ImageHeight = bmpl.GetHeight();
-                }
-                else
-                {
-                    byteArrayFromFile = bmpl.GetByteArray();
-                    ImageWidth = bmpl.GetWidth();
-                    ImageHeight = bmpl.GetHeight();
-                }
+                byteArrayFromFile = bmpl.GetByteArray();
+                ImageWidth = bmpl.GetWidth();
+                ImageHeight = bmpl.GetHeight();
+                Save.IsEnabled = true;
+                Decrypt_Bttn.IsEnabled = false;
+                ECB_Encrypt.IsEnabled = true;
+                CBC_Encrypt.IsEnabled = true;
+                CTR_Encrypt.IsEnabled = true;
+            }
+        }
+
+        private void GetEncryptedFile(object sender, RoutedEventArgs e)
+        {
+            BitmapLoader bmpl = new BitmapLoader();
+            if (bmpl.GetEncryptedFile())
+            {
+                //LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                fileToDecrypt = bmpl.encrypted;
+                byteArrayFromFile = bmpl.encrypted.Content;
+                ImageWidth = bmpl.GetWidth();
+                ImageHeight = bmpl.GetHeight();
+                Save.IsEnabled = true;
+                Decrypt_Bttn.IsEnabled = true;
+                ECB_Encrypt.IsEnabled = false;
+                CBC_Encrypt.IsEnabled = false;
+                CTR_Encrypt.IsEnabled = false;
             }
         }
 
