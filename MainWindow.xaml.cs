@@ -92,7 +92,7 @@ namespace cybersecurity_encryption
             {
                 if (byteArrayFromFile == null)
                 {
-                    System.Windows.MessageBox.Show("Choose image to decrypt", "No image detected", MessageBoxButton.OK);
+                    System.Windows.MessageBox.Show("Choose file to decrypt", "No file detected", MessageBoxButton.OK);
                     return 0;
                 }
                 else if (hash == null)
@@ -153,21 +153,28 @@ namespace cybersecurity_encryption
         }
         public void Decrypt(object sender, RoutedEventArgs e)
         {
-            long time;
-            switch (encryptedFile.EncryptionType)
+            if (fileToDecrypt == null)
             {
-                case "ECB":
-                    time = Decrypt(ecb);
-                    ECB_Timer.Text = "ECB Time: " + time + " ms";
-                    break;
-                case "CBC":
-                    time = Decrypt(cbc);
-                    CBC_Timer.Text = "CBC Time: " + time + " ms";
-                    break;
-                case "CTR":
-                    time = Decrypt(ctr);
-                    CTR_Timer.Text = "CTR Time: " + time + " ms";
-                    break;
+                System.Windows.MessageBox.Show("Choose file to decrypt", "No file detected", MessageBoxButton.OK);
+            }
+            else
+            {
+                long time;
+                switch (fileToDecrypt.EncryptionType)
+                {
+                    case "ECB":
+                        time = Decrypt(ecb);
+                        ECB_Timer.Text = "ECB Time: " + time + " ms";
+                        break;
+                    case "CBC":
+                        time = Decrypt(cbc);
+                        CBC_Timer.Text = "CBC Time: " + time + " ms";
+                        break;
+                    case "CTR":
+                        time = Decrypt(ctr);
+                        CTR_Timer.Text = "CTR Time: " + time + " ms";
+                        break;
+                }
             }
         }
         private void GetImage(object sender, RoutedEventArgs e)
