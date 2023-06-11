@@ -11,6 +11,7 @@ namespace cybersecurity_encryption.Model
     public class BitmapLoader
     {
         private string FileName = "";
+        private bool FileEncrypted = false;
         Bitmap? bitmap;
 
         public int GetHeight()
@@ -29,12 +30,13 @@ namespace cybersecurity_encryption.Model
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Title = "Open Image";
-                dlg.Filter = "bmp files (*.bmp)|*.bmp";
+                dlg.Filter = "files to encrypt (*.bmp)|*.bmp|files to decrypt (*.xml)|*.xml";
                 DialogResult result = dlg.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     FileName = dlg.FileName;
+                    FileEncrypted = FileName.Contains(".xml");
                     return true;
                 }
                 else
