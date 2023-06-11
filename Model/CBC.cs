@@ -9,24 +9,17 @@ namespace cybersecurity_encryption.Model
         public CBC()
         {
         }
-        public override byte[] Encrypt(byte[] plaintext)
+        public override byte[] Encrypt(byte[] plaintext, EncryptedFile fileToEncrypt)
         {
             GenerateInitializationVector();
-            //System.Windows.MessageBox.Show("Length", plaintext.Length.ToString(), MessageBoxButton.OK);
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CBC/PKCS7Padding");
+            fileToEncrypt.EncryptionType = "CBC";
+            fileToEncrypt.HashingAlgorithm = "AES";
+            fileToEncrypt.PaddingMode = "PKCS7Padding";
+            fileToEncrypt.IV = this.getIV();
 
             cipher.Init(true, new ParametersWithIV(new KeyParameter(key), this.IV));
-            //System.Windows.MessageBox.Show("Length", cipher.DoFinal(plaintext).Length.ToString(), MessageBoxButton.OK);
-
             return cipher.DoFinal(plaintext);
-        }
-        public override byte[] Decrypt(byte[] ciphertext)
-        {
-            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CBC/PKCS7Padding");
-
-            cipher.Init(false, new ParametersWithIV(new KeyParameter(key), this.IV));
-
-            return cipher.DoFinal(ciphertext);
         }
     }
 }

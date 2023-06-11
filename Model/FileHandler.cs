@@ -8,7 +8,7 @@ namespace cybersecurity_encryption.Model
 {
     public class FileHandler
     {
-        public Tuple<byte[], Encryption, Encryption> ReadKeyFromFile(Encryption cbc, Encryption ctr)
+        /*public Tuple<byte[], Encryption, Encryption> ReadKeyFromFile(Encryption cbc, Encryption ctr)
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -30,7 +30,7 @@ namespace cybersecurity_encryption.Model
                            /* else if (iter >= lineCount / 3 && iter < (lineCount / 3 * 2)) 
                             cbc.IV[iter - lineCount / 3] = byte.Parse(s);
                             else
-                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);*/
+                                ctr.IV[iter - lineCount / 3 * 2] = byte.Parse(s);
                                 iter++;
                         }
                         return Tuple.Create(cipherKey_temp,cbc,ctr);
@@ -38,7 +38,7 @@ namespace cybersecurity_encryption.Model
                 }
                 return null;
             }
-        }
+        }*/
         public void SaveFile(Bitmap changedImage,string name)
         {
             if (changedImage != null && !String.Equals(name, ""))

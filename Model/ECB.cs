@@ -9,21 +9,15 @@ namespace cybersecurity_encryption.Model
         public ECB()
         {
         }
-        public override byte[] Encrypt(byte[] plaintext)
+        public override byte[] Encrypt(byte[] plaintext, EncryptedFile fileToEncrypt)
         {
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/ECB/PKCS7Padding");
+            fileToEncrypt.EncryptionType = "ECB";
+            fileToEncrypt.HashingAlgorithm = "AES";
+            fileToEncrypt.PaddingMode = "PKCS7Padding";
 
             cipher.Init(true, new KeyParameter(key));
-
             return cipher.DoFinal(plaintext);
-        }
-        public override byte[] Decrypt(byte[] ciphertext)
-        {
-            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/ECB/PKCS7Padding");
-
-            cipher.Init(false, new KeyParameter(key));
-
-            return cipher.DoFinal(ciphertext);
         }
     }
 }

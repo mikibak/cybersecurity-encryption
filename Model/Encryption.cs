@@ -1,4 +1,6 @@
-﻿using Org.BouncyCastle.Security;
+﻿using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +35,19 @@ namespace cybersecurity_encryption.Model
             random.NextBytes(iv);
             this.IV = iv;
         }
-        public abstract byte[] Encrypt(byte[] plaintext);
-        public abstract byte[] Decrypt(byte[] ciphertext);
+        public abstract byte[] Encrypt(byte[] plaintext, EncryptedFile fileToEncrypt);
+        public byte[] Decrypt(EncryptedFile encryptedFile) {
+            byte[] ciphertext = encryptedFile.Content;
+            IBufferedCipher cipher = CipherUtilities.GetCipher(encryptedFile.HashingAlgorithm + "/" + encryptedFile.EncryptionType + "/" + encryptedFile.PaddingMode);
+            if(encryptedFile.IV != null)
+            {
+                cipher.Init(false, new ParametersWithIV(new KeyParameter(key), encryptedFile.IV));
+            }
+            else
+            {
+                cipher.Init(false, new KeyParameter(key));
+            }
+            return cipher.DoFinal(ciphertext);
+        }
     }
 }

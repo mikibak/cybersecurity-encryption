@@ -6,6 +6,7 @@ using cybersecurity_encryption.Model;
 using System.Drawing;
 using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto;
+using System.Xml.Linq;
 
 namespace cybersecurity_encryption
 {
@@ -15,7 +16,9 @@ namespace cybersecurity_encryption
         public byte[] byteArrayModified { get; set; }
         public byte[] debugArray { get; set; }
         public byte[] cipherKey;
-        EncryptedFile file;
+
+        EncryptedFile? encryptedFile;
+        EncryptedFile fileToDecrypt;
 
         private int ImageWidth;
         private int ImageHeight;
@@ -46,6 +49,7 @@ namespace cybersecurity_encryption
                 cipherKey = hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordInvisible.Password));
             else
                 cipherKey = hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordVisible.Text));
+
             ecb.setKey(cipherKey);
             cbc.setKey(cipherKey);
             ctr.setKey(cipherKey);
@@ -64,20 +68,21 @@ namespace cybersecurity_encryption
             }
 
             Stopwatch stopwatch = new Stopwatch();
+            encryptedFile = new EncryptedFile();
+
             stopwatch.Start();
 
-            file = new EncryptedFile();
-            byteArrayModified = encryption.Encrypt(byteArrayFromFile);
-            file.PaddingLen = byteArrayModified.Length - byteArrayFromFile.Length;
-            file.Content = byteArrayModified;
+            byteArrayModified = encryption.Encrypt(byteArrayFromFile, encryptedFile);
+
+            encryptedFile.PaddingLen = byteArrayModified.Length - byteArrayFromFile.Length;
+            encryptedFile.Content = byteArrayModified;
 
             byteArrayModified = BitmapPadding.AddBitmapPadding(byteArrayModified, ImageWidth, ImageHeight);
-
             Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight + 1, byteArrayModified);
             ImageHeight = ImageHeight + 1;
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
-
+            fileToDecrypt = encryptedFile;
             return stopwatch.ElapsedMilliseconds;
         }
 
@@ -100,9 +105,11 @@ namespace cybersecurity_encryption
                 byteArrayFromFile = BitmapPadding.StripBitmapPadding(byteArrayFromFile);
                 
                 Stopwatch stopwatch = new Stopwatch();
+                encryptedFile = null;
                 stopwatch.Start();
-                byteArrayModified = encryption.Decrypt(file.Content);
+                byteArrayModified = encryption.Decrypt(fileToDecrypt);
                 stopwatch.Stop();
+
                 Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight - 1, byteArrayModified);
                 ImageHeight = ImageHeight - 1;
                 changedImage = bitmap;
@@ -132,27 +139,22 @@ namespace cybersecurity_encryption
         public void EncryptECB(object sender, RoutedEventArgs e)
         {
             long time = Encrypt(ecb);
-            file.EncryptionType = "ECB";
             ECB_Timer.Text = "ECB Time: " + time + " ms";
         }
         public void EncryptCBC(object sender, RoutedEventArgs e)
         {
             long time = Encrypt(cbc);
-            file.EncryptionType = "CBC";
-            file.IV = cbc.getIV();
             CBC_Timer.Text = "CBC Time: " + time + " ms";
         }
         public void EncryptCTR(object sender, RoutedEventArgs e)
         {
             long time = Encrypt(ctr);
-            file.EncryptionType = "CTR";
-            file.IV = ctr.getIV();
             CTR_Timer.Text = "CTR Time: " + time + " ms";
         }
         public void Decrypt(object sender, RoutedEventArgs e)
         {
             long time;
-            switch (file.EncryptionType)
+            switch (encryptedFile.EncryptionType)
             {
                 case "ECB":
                     time = Decrypt(ecb);
@@ -182,20 +184,13 @@ namespace cybersecurity_encryption
 
         private void SaveChangedImage_Click(object sender, RoutedEventArgs e)
         {
-            //FileHandler fileHanlder = new FileHandler();
-            //fileHanlder.SaveFile(changedImage, SavedFileName.Text);
-            file.SaveToFile(SavedFileName.Text);
-        }
-
-        private void ReadyKeyFile_Click(object sender, RoutedEventArgs e)
-        {
-            FileHandler fileHanlder = new FileHandler();
-            var result = fileHanlder.ReadKeyFromFile(cbc, ctr);
-            if (result != null)
+            if (encryptedFile != null)
             {
-                cipherKey = result.Item1;
-                cbc = result.Item2;
-                ctr=result.Item3;
+                encryptedFile.SaveToFile(SavedFileName.Text);
+            }
+            if(changedImage!= null)
+            {
+                changedImage.Save(("../../../Resources/" + SavedFileName.Text + ".bmp"));
             }
         }
     }

@@ -9,22 +9,17 @@ namespace cybersecurity_encryption.Model
         public CTR()
         {
         }
-        public override byte[] Encrypt(byte[] plaintext)
+        public override byte[] Encrypt(byte[] plaintext, EncryptedFile fileToEncrypt)
         {
             GenerateInitializationVector();
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/PKCS7Padding");
+            fileToEncrypt.EncryptionType = "CTR";
+            fileToEncrypt.HashingAlgorithm = "AES";
+            fileToEncrypt.PaddingMode = "PKCS7Padding";
+            fileToEncrypt.IV = this.getIV();
 
             cipher.Init(true, new ParametersWithIV(new KeyParameter(key), this.IV));
-
             return cipher.DoFinal(plaintext);
-        }
-        public override byte[] Decrypt(byte[] ciphertext)
-        {
-            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/PKCS7Padding");
-
-            cipher.Init(false, new ParametersWithIV(new KeyParameter(key), this.IV));
-
-            return cipher.DoFinal(ciphertext);
         }
     }
 }
