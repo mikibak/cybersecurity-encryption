@@ -200,7 +200,7 @@ namespace cybersecurity_encryption
             BitmapLoader bmpl = new BitmapLoader();
             if (bmpl.GetEncryptedFile())
             {
-                //LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                LoadedImage.Source = bmpl.SetImage(LoadedImage);
                 fileToDecrypt = bmpl.encrypted;
                 byteArrayFromFile = bmpl.encrypted.Content;
                 ImageWidth = bmpl.GetWidth();
