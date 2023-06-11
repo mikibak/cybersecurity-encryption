@@ -119,7 +119,7 @@ namespace cybersecurity_encryption
             }
             catch (InvalidCipherTextException ex)
             {
-                System.Windows.MessageBox.Show("Decryption Error" + ex, "Invalid Ciphertext", MessageBoxButton.OK);
+                System.Windows.MessageBox.Show("Decryption Error", "Invalid Ciphertext", MessageBoxButton.OK);
                 return -1;
             }
         }
