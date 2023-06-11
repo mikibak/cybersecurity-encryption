@@ -186,6 +186,11 @@ namespace cybersecurity_encryption
                 byteArrayFromFile = bmpl.GetByteArray();
                 ImageWidth = bmpl.GetWidth();
                 ImageHeight = bmpl.GetHeight();
+                Save.IsEnabled = true;
+                Decrypt_Bttn.IsEnabled = false;
+                ECB_Encrypt.IsEnabled = true;
+                CBC_Encrypt.IsEnabled = true;
+                CTR_Encrypt.IsEnabled = true;
             }
         }
 
@@ -194,10 +199,15 @@ namespace cybersecurity_encryption
             BitmapLoader bmpl = new BitmapLoader();
             if (bmpl.GetEncryptedFile())
             {
-                LoadedImage.Source = bmpl.SetImage(LoadedImage);
+                //LoadedImage.Source = bmpl.SetImage(LoadedImage);
                 byteArrayFromFile = bmpl.GetByteArray();
                 ImageWidth = bmpl.GetWidth();
                 ImageHeight = bmpl.GetHeight();
+                Save.IsEnabled = true;
+                Decrypt_Bttn.IsEnabled = true;
+                ECB_Encrypt.IsEnabled = false;
+                CBC_Encrypt.IsEnabled = false;
+                CTR_Encrypt.IsEnabled = false;
             }
         }
 
