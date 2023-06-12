@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto;
 using System.Xml.Linq;
+using System;
 
 namespace cybersecurity_encryption
 {
@@ -69,18 +70,16 @@ namespace cybersecurity_encryption
 
             Stopwatch stopwatch = new Stopwatch();
             encryptedFile = new EncryptedFile();
-
+            byte[] arrayForBmp = new byte[byteArrayFromFile.Length];
             stopwatch.Start();
-
             byteArrayModified = encryption.Encrypt(byteArrayFromFile, encryptedFile);
-
+            stopwatch.Stop();
+            Array.Copy(byteArrayModified, 0, arrayForBmp, 0, arrayForBmp.Length);
             encryptedFile.PaddingLen = byteArrayModified.Length - byteArrayFromFile.Length;
             encryptedFile.Content = byteArrayModified;
             encryptedFile.Width = ImageWidth;
             encryptedFile.Height = ImageHeight;
-            byteArrayModified = BitmapPadding.AddBitmapPadding(byteArrayModified, ImageWidth, ImageHeight);
-            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight + 1, byteArrayModified);
-            ImageHeight = ImageHeight + 1;
+            Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, arrayForBmp);
             changedImage = bitmap;
             setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
             fileToDecrypt = encryptedFile;
@@ -102,17 +101,13 @@ namespace cybersecurity_encryption
                     return 0;
                 }
 
-                //remove padding
-                byteArrayFromFile = BitmapPadding.StripBitmapPadding(byteArrayFromFile);
-                
                 Stopwatch stopwatch = new Stopwatch();
                 encryptedFile = null;
                 stopwatch.Start();
                 byteArrayModified = encryption.Decrypt(fileToDecrypt);
                 stopwatch.Stop();
                 ImageWidth = fileToDecrypt.Width; ImageHeight=fileToDecrypt.Height;
-                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight - 1, byteArrayModified);
-                ImageHeight = ImageHeight - 1;
+                Bitmap bitmap = BitmapLoader.ArrayToBitmap(ImageWidth, ImageHeight, byteArrayModified);
                 changedImage = bitmap;
                 setModifiedImage(BitmapLoader.BitmapToBitmapImage(bitmap));
                 return stopwatch.ElapsedMilliseconds;
